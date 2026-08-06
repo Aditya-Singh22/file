@@ -1,0 +1,234 @@
+-- ==========================================================
+-- ADBMS Practical #1
+-- Topic: ERD, Database Design and Implementation
+-- ==========================================================
+
+
+-- ==========================================================
+-- Q3(a). Create Tables for University Course Registration System
+-- ==========================================================
+
+CREATE TABLE Department7777 (
+    DepartmentID INT PRIMARY KEY,
+    DepartmentName VARCHAR2(50),
+    Office VARCHAR2(50)
+);
+
+CREATE TABLE Faculty7777 (
+    FacultyID INT PRIMARY KEY,
+    FacultyName VARCHAR2(50),
+    Email VARCHAR2(50),
+    Qualification VARCHAR2(50),
+    DepartmentID INT,
+    FOREIGN KEY (DepartmentID)
+    REFERENCES Department7777(DepartmentID)
+);
+
+CREATE TABLE Course7777 (
+    CourseID INT PRIMARY KEY,
+    CourseName VARCHAR2(50),
+    Credits INT,
+    Description VARCHAR2(100),
+    FacultyID INT,
+    FOREIGN KEY (FacultyID)
+    REFERENCES Faculty7777(FacultyID)
+);
+
+CREATE TABLE Student7777 (
+    StudentID INT PRIMARY KEY,
+    StudentName VARCHAR2(50),
+    Email VARCHAR2(50),
+    Phone VARCHAR2(15),
+    DateOfBirth DATE
+);
+
+CREATE TABLE Enrollment7777 (
+    StudentID INT,
+    CourseID INT,
+    EnrollDate DATE,
+    PRIMARY KEY (StudentID, CourseID),
+    FOREIGN KEY (StudentID)
+    REFERENCES Student7777(StudentID),
+    FOREIGN KEY (CourseID)
+    REFERENCES Course7777(CourseID)
+);
+
+
+-- ==========================================================
+-- Q3(b). Insert Records into Tables
+-- ==========================================================
+
+INSERT INTO Department7777
+VALUES (1,'Computer','A101');
+
+INSERT INTO Department7777
+VALUES (2,'IT','B201');
+
+INSERT INTO Department7777
+VALUES (3,'Electronics','C301');
+
+
+INSERT INTO Faculty7777
+VALUES (101,'Dr Sharma','sharma@gmail.com','PhD',1);
+
+INSERT INTO Faculty7777
+VALUES (102,'Dr Mehta','mehta@gmail.com','MTech',2);
+
+INSERT INTO Faculty7777
+VALUES (103,'Dr Patel','patel@gmail.com','PhD',3);
+
+
+INSERT INTO Course7777
+VALUES (201,'DBMS',4,'Database Subject',101);
+
+INSERT INTO Course7777
+VALUES (202,'Java',3,'Programming',102);
+
+INSERT INTO Course7777
+VALUES (203,'Networks',4,'Computer Network',103);
+
+
+INSERT INTO Student7777
+VALUES (1,'Aditya','adi@gmail.com','9876543210',
+TO_DATE('2005-01-10','YYYY-MM-DD'));
+
+INSERT INTO Student7777
+VALUES (2,'Rahul','rahul@gmail.com','9876543211',
+TO_DATE('2004-08-15','YYYY-MM-DD'));
+
+INSERT INTO Student7777
+VALUES (3,'Sneha','sneha@gmail.com','9876543212',
+TO_DATE('2005-03-20','YYYY-MM-DD'));
+
+
+INSERT INTO Enrollment7777
+VALUES (1,201,TO_DATE('2026-07-20','YYYY-MM-DD'));
+
+INSERT INTO Enrollment7777
+VALUES (2,201,TO_DATE('2026-07-20','YYYY-MM-DD'));
+
+INSERT INTO Enrollment7777
+VALUES (3,202,TO_DATE('2026-07-21','YYYY-MM-DD'));
+
+
+-- ==========================================================
+-- Q3(c). Display All Students Enrolled in a Particular Course
+-- ==========================================================
+
+SELECT
+    s.StudentID,
+    s.StudentName,
+    c.CourseName
+FROM Student7777 s
+JOIN Enrollment7777 e
+ON s.StudentID = e.StudentID
+JOIN Course7777 c
+ON e.CourseID = c.CourseID
+WHERE c.CourseID = 201;
+
+
+-- ==========================================================
+-- Q3(c). Display All Courses Taught by a Particular Faculty
+-- ==========================================================
+
+SELECT
+    f.FacultyName,
+    c.CourseName,
+    c.Credits
+FROM Faculty7777 f
+JOIN Course7777 c
+ON f.FacultyID = c.FacultyID
+WHERE f.FacultyID = 101;
+
+
+-- ==========================================================
+-- Q4(a). Display All Students Belonging to a Particular Department
+-- ==========================================================
+
+SELECT
+    s.StudentID,
+    s.StudentName,
+    d.DepartmentName
+FROM Student7777 s
+JOIN Enrollment7777 e
+ON s.StudentID = e.StudentID
+JOIN Course7777 c
+ON e.CourseID = c.CourseID
+JOIN Faculty7777 f
+ON c.FacultyID = f.FacultyID
+JOIN Department7777 d
+ON f.DepartmentID = d.DepartmentID
+WHERE d.DepartmentName = 'Computer';
+
+
+-- ==========================================================
+-- Q4(b). Display Number of Students Enrolled in Each Course
+-- ==========================================================
+
+SELECT
+    c.CourseID,
+    c.CourseName,
+    COUNT(e.StudentID) AS TotalStudents
+FROM Course7777 c
+JOIN Enrollment7777 e
+ON c.CourseID = e.CourseID
+GROUP BY c.CourseID, c.CourseName;
+
+
+-- ==========================================================
+-- Q4(c). Display Faculty Members and the Courses Taught by Them
+-- ==========================================================
+
+SELECT
+    f.FacultyName,
+    c.CourseName
+FROM Faculty7777 f
+JOIN Course7777 c
+ON f.FacultyID = c.FacultyID;
+
+
+-- ==========================================================
+-- Q4(d). Display Courses Having More Than One Student Enrolled
+-- ==========================================================
+
+SELECT
+    c.CourseID,
+    c.CourseName,
+    COUNT(e.StudentID) AS TotalStudents
+FROM Course7777 c
+JOIN Enrollment7777 e
+ON c.CourseID = e.CourseID
+GROUP BY c.CourseID, c.CourseName
+HAVING COUNT(e.StudentID) > 1;
+
+
+-- ==========================================================
+-- Take Home Assignment
+-- Create Author Table
+-- ==========================================================
+
+CREATE TABLE Author (
+    Author_ID INT PRIMARY KEY,
+    Name VARCHAR2(100),
+    Email VARCHAR2(100),
+    Affiliation VARCHAR2(150)
+);
+
+
+-- ==========================================================
+-- Take Home Assignment
+-- Create Research_Paper Table
+-- ==========================================================
+
+CREATE TABLE Research_Paper (
+    Paper_ID INT PRIMARY KEY,
+    Title VARCHAR2(200),
+    Abstract CLOB,
+    Publication_Date DATE,
+    Author_ID INT,
+    Journal_ID INT,
+    FOREIGN KEY (Author_ID)
+    REFERENCES Author(Author_ID),
+    FOREIGN KEY (Journal_ID)
+    REFERENCES Journal(Journal_ID)
+);

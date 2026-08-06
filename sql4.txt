@@ -1,0 +1,269 @@
+-- ==========================================================
+-- ADBMS Practical #4
+-- Topic: ORDBMS
+-- ==========================================================
+
+
+-- ==========================================================
+-- Part A: Composite Attributes using Object Types
+-- Q1. Create Address Object Type
+-- ==========================================================
+
+CREATE TYPE Address AS OBJECT (
+    Street   VARCHAR2(50),
+    City     VARCHAR2(30),
+    Pincode  VARCHAR2(10)
+);
+
+
+-- ==========================================================
+-- Part A
+-- Q2. Create Employee Table with Composite Attribute
+-- ==========================================================
+
+CREATE TABLE Employee (
+    EmpID NUMBER PRIMARY KEY,
+    EmpName VARCHAR2(50),
+    EmpAddress Address
+);
+
+
+-- ==========================================================
+-- Part A
+-- Q3. Insert 5 Records into Employee Table
+-- ==========================================================
+
+INSERT INTO Employee
+VALUES (101, 'Rahul', Address('MG Road', 'Mumbai', '421201'));
+
+INSERT INTO Employee
+VALUES (102, 'Priya', Address('Brigade Road', 'Bengaluru', '560001'));
+
+INSERT INTO Employee
+VALUES (103, 'Amit', Address('Anna Salai', 'Chennai', '600002'));
+
+INSERT INTO Employee
+VALUES (104, 'Sneha', Address('Banjara Hills', 'Hyderabad', '500034'));
+
+INSERT INTO Employee
+VALUES (105, 'Vikram', Address('Park Street', 'Kolkata', '700016'));
+
+INSERT INTO Employee
+VALUES (106, 'Neha', Address('FC Road', 'Pune', '411004'));
+
+
+-- ==========================================================
+-- Part A
+-- Q4. Retrieve Complete Employee Details
+-- ==========================================================
+
+SELECT
+    e.EmpID,
+    e.EmpName,
+    e.EmpAddress.Street AS Street,
+    e.EmpAddress.City AS City,
+    e.EmpAddress.Pincode AS Pincode
+FROM Employee e;
+
+
+-- ==========================================================
+-- Part A
+-- Q5. Retrieve Employee Name and City
+-- ==========================================================
+
+SELECT
+    e.EmpName,
+    e.EmpAddress.City AS City
+FROM Employee e;
+
+
+-- ==========================================================
+-- Part A
+-- Q6. Retrieve Employee Name and Street
+-- ==========================================================
+
+SELECT
+    e.EmpName,
+    e.EmpAddress.Street AS Street
+FROM Employee e;
+
+
+-- ==========================================================
+-- Part A
+-- Q7. Retrieve Employee Name and Pincode
+-- ==========================================================
+
+SELECT
+    e.EmpName,
+    e.EmpAddress.Pincode AS Pincode
+FROM Employee e;
+
+
+-- ==========================================================
+-- Part A
+-- Q8. Retrieve Multiple Address Attributes
+-- ==========================================================
+
+SELECT
+    e.EmpName,
+    e.EmpAddress.City AS City,
+    e.EmpAddress.Pincode AS Pincode
+FROM Employee e;
+
+
+-- ==========================================================
+-- Part B: Object Type Inheritance
+-- Q1. Create Parent Object Type
+-- ==========================================================
+
+CREATE TYPE PersonType AS OBJECT (
+    PersonID NUMBER,
+    PersonName VARCHAR2(50)
+) NOT FINAL;
+
+
+-- ==========================================================
+-- Part B
+-- Q2. Create Parent Object Table
+-- ==========================================================
+
+CREATE TABLE Person OF PersonType (
+    PRIMARY KEY (PersonID)
+);
+
+
+-- ==========================================================
+-- Part B
+-- Q3. Insert Records into Parent Table
+-- ==========================================================
+
+INSERT INTO Person
+VALUES (PersonType(1, 'Rahul'));
+
+INSERT INTO Person
+VALUES (PersonType(2, 'Priya'));
+
+INSERT INTO Person
+VALUES (PersonType(3, 'Amit'));
+
+
+-- ==========================================================
+-- Part B
+-- Q4. Query Parent Table
+-- ==========================================================
+
+SELECT * FROM Person;
+
+
+-- ==========================================================
+-- Part B
+-- Q5. Create Child Type Using Inheritance
+-- ==========================================================
+
+CREATE TYPE EmployeeType UNDER PersonType (
+    Salary NUMBER
+);
+
+
+-- ==========================================================
+-- Part B
+-- Q6. Create Child Object Table
+-- ==========================================================
+
+CREATE TABLE EmployeeChild OF EmployeeType (
+    PRIMARY KEY (PersonID)
+);
+
+
+-- ==========================================================
+-- Part B
+-- Q7. Insert Records into Child Table
+-- ==========================================================
+
+INSERT INTO EmployeeChild
+VALUES (EmployeeType(101, 'Rahul', 50000));
+
+INSERT INTO EmployeeChild
+VALUES (EmployeeType(102, 'Priya', 60000));
+
+
+-- ==========================================================
+-- Part B
+-- Q8. Query Child Table
+-- ==========================================================
+
+SELECT * FROM EmployeeChild;
+
+
+-- ==========================================================
+-- Part B
+-- Q9. Describe Child Table Structure
+-- ==========================================================
+
+DESC EmployeeChild;
+
+
+-- ==========================================================
+-- Practice Questions
+-- Q1. Create a composite type named Contact containing Phone and Email
+-- ==========================================================
+
+CREATE TYPE Contact AS OBJECT (
+    Phone VARCHAR2(15),
+    Email VARCHAR2(50)
+);
+
+
+-- ==========================================================
+-- Practice Questions
+-- Q2. Create a Student table using Contact type
+-- ==========================================================
+
+CREATE TABLE Student_1 (
+    StudentID NUMBER PRIMARY KEY,
+    StudentName VARCHAR2(50),
+    StudentContact Contact
+);
+
+
+-- ==========================================================
+-- Practice Questions
+-- Q3. Insert one record into Student table
+-- ==========================================================
+
+INSERT INTO Student_1
+VALUES (
+    1,
+    'Aditya',
+    Contact('9876543210', 'aditya@gmail.com')
+);
+
+
+-- ==========================================================
+-- Practice Questions
+-- Q4. Retrieve only Email field
+-- ==========================================================
+
+SELECT
+    s.StudentContact.Email AS Email
+FROM Student_1 s;
+
+
+-- ==========================================================
+-- Practice Questions
+-- Q5. Create a child table Research Scholar inherited from Student
+-- ==========================================================
+
+CREATE TYPE StudentType AS OBJECT (
+    StudentID NUMBER,
+    StudentName VARCHAR2(50),
+    StudentContact Contact
+) NOT FINAL;
+
+CREATE TYPE ResearchScholarType UNDER StudentType (
+    ResearchArea VARCHAR2(100)
+);
+
+CREATE TABLE ResearchScholar OF ResearchScholarType (
+    PRIMARY KEY (StudentID)
+);

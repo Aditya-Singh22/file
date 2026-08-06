@@ -1,0 +1,256 @@
+-- ==========================================================
+-- ADBMS Practical #2
+-- Topic: Parallelism and Data Replication
+-- Case Study: Distributed Hospital Management System
+-- ==========================================================
+
+
+-- ==========================================================
+-- Section A: Database Creation
+-- Q1. Create a Patient table
+-- ==========================================================
+
+CREATE TABLE Patient777 (
+    Patient_ID INT PRIMARY KEY,
+    Patient_Name VARCHAR2(100),
+    Age INT,
+    Gender VARCHAR2(10),
+    Disease VARCHAR2(100),
+    Doctor_Name VARCHAR2(100),
+    Hospital VARCHAR2(100),
+    Admission_Date DATE
+);
+
+
+-- ==========================================================
+-- Section A
+-- Q2. Insert at least 12 patient records
+-- ==========================================================
+
+INSERT ALL
+INTO Patient777 VALUES (101,'Aarav Sharma',25,'Male','Dengue','Dr. Mehta','Mumbai Hospital',DATE '2026-07-01')
+INTO Patient777 VALUES (102,'Priya Patil',32,'Female','Malaria','Dr. Joshi','Mumbai Hospital',DATE '2026-07-03')
+INTO Patient777 VALUES (103,'Rohan Deshmukh',45,'Male','Diabetes','Dr. Kulkarni','Mumbai Hospital',DATE '2026-07-05')
+INTO Patient777 VALUES (104,'Sneha Pawar',29,'Female','Typhoid','Dr. Patil','Pune Hospital',DATE '2026-07-02')
+INTO Patient777 VALUES (105,'Vikram Jadhav',50,'Male','Hypertension','Dr. Shinde','Pune Hospital',DATE '2026-07-06')
+INTO Patient777 VALUES (106,'Neha More',38,'Female','Asthma','Dr. Deshpande','Pune Hospital',DATE '2026-07-08')
+INTO Patient777 VALUES (107,'Aditya Kale',27,'Male','Covid-19','Dr. Pawar','Nashik Hospital',DATE '2026-07-04')
+INTO Patient777 VALUES (108,'Pooja Chavan',41,'Female','Pneumonia','Dr. Patwardhan','Nashik Hospital',DATE '2026-07-09')
+INTO Patient777 VALUES (109,'Rahul Naik',36,'Male','Migraine','Dr. Gokhale','Nashik Hospital',DATE '2026-07-10')
+INTO Patient777 VALUES (110,'Kavita Rao',30,'Female','Appendicitis','Dr. Bhosale','Nagpur Hospital',DATE '2026-07-07')
+INTO Patient777 VALUES (111,'Suresh Verma',55,'Male','Heart Disease','Dr. Agrawal','Nagpur Hospital',DATE '2026-07-11')
+INTO Patient777 VALUES (112,'Anjali Singh',24,'Female','Fracture','Dr. Tiwari','Nagpur Hospital',DATE '2026-07-12')
+SELECT * FROM DUAL;
+
+
+-- ==========================================================
+-- Section A
+-- Q3. Display all patient records ordered by Patient_ID
+-- ==========================================================
+
+SELECT *
+FROM Patient777
+ORDER BY Patient_ID;
+
+
+-- ==========================================================
+-- Section B: Horizontal Fragmentation
+-- Q4. Create four fragmented tables
+-- ==========================================================
+
+CREATE TABLE Patient_Mumbai AS
+SELECT *
+FROM Patient777
+WHERE Hospital='Mumbai Hospital';
+
+CREATE TABLE Patient_Pune AS
+SELECT *
+FROM Patient777
+WHERE Hospital='Pune Hospital';
+
+CREATE TABLE Patient_Nashik AS
+SELECT *
+FROM Patient777
+WHERE Hospital='Nashik Hospital';
+
+CREATE TABLE Patient_Nagpur AS
+SELECT *
+FROM Patient777
+WHERE Hospital='Nagpur Hospital';
+
+
+-- ==========================================================
+-- Section B
+-- Q5. Verify each fragmented table
+-- ==========================================================
+
+SELECT * FROM Patient_Mumbai;
+
+SELECT * FROM Patient_Pune;
+
+SELECT * FROM Patient_Nashik;
+
+SELECT * FROM Patient_Nagpur;
+
+
+-- ==========================================================
+-- Section B
+-- Q6. Display total patients in each hospital
+-- ==========================================================
+
+SELECT COUNT(*) AS Total_Patients FROM Patient_Mumbai;
+
+SELECT COUNT(*) AS Total_Patients FROM Patient_Pune;
+
+SELECT COUNT(*) AS Total_Patients FROM Patient_Nashik;
+
+SELECT COUNT(*) AS Total_Patients FROM Patient_Nagpur;
+
+
+-- ==========================================================
+-- Section C: Data Replication
+-- Q7. Create replica table
+-- ==========================================================
+
+CREATE TABLE Patient_Replica AS
+SELECT *
+FROM Patient777;
+
+
+-- ==========================================================
+-- Section C
+-- Q8. Insert a new patient and synchronize replica
+-- ==========================================================
+
+INSERT INTO Patient777
+VALUES
+(113,'Arjun Nair',42,'Male','Dengue','Dr Sharma','Mumbai Hospital',DATE '2026-07-15');
+
+INSERT INTO Patient_Replica
+SELECT *
+FROM Patient777
+WHERE Patient_ID=113;
+
+
+-- ==========================================================
+-- Section C
+-- Q9. Update disease and synchronize replica
+-- ==========================================================
+
+UPDATE Patient777
+SET Disease='Hypertension'
+WHERE Patient_ID=105;
+
+UPDATE Patient_Replica
+SET Disease='Hypertension'
+WHERE Patient_ID=105;
+
+
+-- ==========================================================
+-- Section C
+-- Q10. Delete patient and synchronize replica
+-- ==========================================================
+
+DELETE FROM Patient777
+WHERE Patient_ID=102;
+
+DELETE FROM Patient_Replica
+WHERE Patient_ID=102;
+
+
+-- ==========================================================
+-- Section D: Distributed Query Processing
+-- Q11. Retrieve all records using UNION ALL
+-- ==========================================================
+
+SELECT * FROM Patient_Mumbai
+UNION ALL
+SELECT * FROM Patient_Pune
+UNION ALL
+SELECT * FROM Patient_Nashik
+UNION ALL
+SELECT * FROM Patient_Nagpur;
+
+
+-- ==========================================================
+-- Section D
+-- Q12. Display all Diabetes patients
+-- ==========================================================
+
+SELECT *
+FROM Patient_Mumbai
+WHERE Disease='Diabetes'
+
+UNION ALL
+
+SELECT *
+FROM Patient_Pune
+WHERE Disease='Diabetes'
+
+UNION ALL
+
+SELECT *
+FROM Patient_Nashik
+WHERE Disease='Diabetes'
+
+UNION ALL
+
+SELECT *
+FROM Patient_Nagpur
+WHERE Disease='Diabetes';
+
+
+-- ==========================================================
+-- Section D
+-- Q13. Display number of patients treated by each doctor
+-- ==========================================================
+
+SELECT Doctor_Name,
+       COUNT(*) AS Total_Patients
+FROM
+(
+    SELECT Doctor_Name FROM Patient_Mumbai
+    UNION ALL
+    SELECT Doctor_Name FROM Patient_Pune
+    UNION ALL
+    SELECT Doctor_Name FROM Patient_Nashik
+    UNION ALL
+    SELECT Doctor_Name FROM Patient_Nagpur
+)
+GROUP BY Doctor_Name;
+
+
+-- ==========================================================
+-- Section E: Query Performance
+-- Q14. Create index on Disease and compare execution plan
+-- ==========================================================
+
+EXPLAIN PLAN FOR
+SELECT *
+FROM Patient777
+WHERE Disease='Diabetes';
+
+SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
+
+CREATE INDEX IDX_Disease
+ON Patient777(Disease);
+
+EXPLAIN PLAN FOR
+SELECT *
+FROM Patient777
+WHERE Disease='Diabetes';
+
+SELECT * FROM TABLE(DBMS_XPLAN.DISPLAY);
+
+
+-- ==========================================================
+-- Section E
+-- Q15. Create index on Hospital and retrieve Mumbai patients
+-- ==========================================================
+
+CREATE INDEX IDX_Hospital
+ON Patient777(Hospital);
+
+SELECT *
+FROM Patient777
+WHERE Hospital='Mumbai Hospital';
