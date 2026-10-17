@@ -1,0 +1,2448 @@
+==============================
+SCT PRACTICAL 1
+==============================
+
+Design a Simple Linear Neural Network Model
+
+
+QUESTION 1: Implement a single neuron with given inputs, weights, and bias using step activation.
+
+import numpy as np
+
+X = np.array([11, 12, 13])
+W = np.array([0.45, 0.5, 0.65])
+b = 0.2
+
+z = np.dot(X, W) + b
+output = 1 if z > 0 else 0
+
+print("Output:", output)
+
+
+QUESTION 2: Design a neuron using sigmoid activation and compute output.
+
+import numpy as np
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+X = np.array([2, 1])
+W = np.array([0.3, 0.8])
+b = -0.5
+
+z = np.dot(X, W) + b
+output = sigmoid(z)
+
+print("Sigmoid Output:", output)
+
+
+QUESTION 3: Implement forward propagation for a 2-input neuron using ReLU.
+
+import numpy as np
+
+def relu(x):
+    return max(0, x)
+
+X = np.array([1.5, -2])
+W = np.array([0.7, 0.9])
+b = 0.1
+
+z = np.dot(X, W) + b
+output = relu(z)
+
+print("ReLU Output:", output)
+
+
+QUESTION 4: Compute outputs for multiple input samples using a neuron.
+
+import numpy as np
+
+X = np.array([[1, 2], [3, 4], [5, 6]])
+W = np.array([0.2, 0.3])
+b = 0.5
+
+z = np.dot(X, W) + b
+
+print("Outputs:", z)
+
+
+QUESTION 5: Normalize input data and compute neuron output.
+
+import numpy as np
+
+X = np.array([10, 20, 30])
+X_norm = (X - np.mean(X)) / np.std(X)
+
+W = np.array([0.5, 0.4, 0.3])
+b = 0.1
+
+output = np.dot(X_norm, W) + b
+
+print("Normalized Output:", output)
+
+
+QUESTION 6: Compare outputs with and without bias.
+
+import numpy as np
+
+X = np.array([1, 2, 3])
+W = np.array([0.2, 0.3, 0.4])
+
+# Without bias
+output1 = np.dot(X, W)
+
+# With bias
+b = 1
+output2 = np.dot(X, W) + b
+
+print("Without Bias:", output1)
+print("With Bias:", output2)
+
+
+QUESTION 7: Implement a neuron using tanh activation.
+
+import numpy as np
+
+def tanh(x):
+    return np.tanh(x)
+
+X = np.array([0.5, -1.5])
+W = np.array([0.6, 0.9])
+b = 0.2
+
+z = np.dot(X, W) + b
+output = tanh(z)
+
+print("Tanh Output:", output)
+
+
+QUESTION 8: Build a simple 2-layer forward propagation manually.
+
+import numpy as np
+
+X = np.array([1, 2])
+W1 = np.array([[0.5, 0.2], [0.3, 0.8]])
+b1 = np.array([0.1, 0.2])
+
+W2 = np.array([0.7, 0.6])
+b2 = 0.3
+
+h = np.dot(X, W1) + b1
+h = np.maximum(0, h)  # ReLU
+
+output = np.dot(h, W2) + b2
+
+print("Final Output:", output)
+
+
+QUESTION 9: Implement softmax activation for multi-class neuron output.
+
+import numpy as np
+
+def softmax(x):
+    exp_x = np.exp(x - np.max(x))  # Stability trick
+    return exp_x / np.sum(exp_x)
+
+# Input and weights (3 classes)
+X = np.array([1, 2])
+W = np.array([[0.2, 0.5, 0.3],
+              [0.4, 0.1, 0.6]])
+b = np.array([0.1, 0.2, 0.3])
+
+z = np.dot(X, W) + b
+output = softmax(z)
+
+print("Softmax Output:", output)
+print("Sum of probabilities:", np.sum(output))
+
+
+QUESTION 10: Analyze the effect of scaling input on neuron output.
+
+import numpy as np
+
+X = np.array([1, 2, 3])
+W = np.array([0.5, 0.4, 0.3])
+b = 0.2
+
+# Original output
+output1 = np.dot(X, W) + b
+
+# Scaled input
+X_scaled = X * 10
+output2 = np.dot(X_scaled, W) + b
+
+print("Original Output:", output1)
+print("Scaled Input Output:", output2)
+
+
+QUESTION 11: Compute neuron output using matrix form for multiple neurons (vectorized layer).
+
+import numpy as np
+
+X = np.array([[1, 2, 3],
+              [4, 5, 6]])
+
+W = np.array([[0.2, 0.3, 0.4],
+              [0.5, 0.6, 0.7],
+              [0.8, 0.9, 1.0]])
+
+b = np.array([0.1, 0.2, 0.3])
+
+output = np.dot(X, W) + b
+
+print("Layer Output:\n", output)
+
+
+QUESTION 12: Compare linear vs nonlinear activation impact on output.
+
+import numpy as np
+
+def relu(x):
+    return np.maximum(0, x)
+
+X = np.array([2, -1])
+W = np.array([0.6, 0.8])
+b = -0.5
+
+linear_output = np.dot(X, W) + b
+relu_output = relu(linear_output)
+
+print("Linear Output:", linear_output)
+print("ReLU Output:", relu_output)
+
+==============================
+SCT PRACTICAL 2
+==============================
+
+Binary and Bipolar Sigmoid Activation Functions
+
+
+QUESTION 1: Write a Python program to define the binary sigmoid function, generate input values from -10 to 10, compute sigmoid outputs, plot the curve, and display minimum and maximum output values.
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def binary_sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+x = np.linspace(-10, 10, 300)
+y = binary_sigmoid(x)
+
+print("Minimum Output =", np.min(y))
+print("Maximum Output =", np.max(y))
+
+plt.figure(figsize=(5, 3))
+plt.plot(x, y, linewidth=1.5)
+plt.title("Binary Sigmoid Function")
+plt.xlabel("Input")
+plt.ylabel("Output")
+plt.grid(True)
+plt.show()
+
+
+QUESTION 2: Implement the bipolar sigmoid function and compare its output range with the binary sigmoid.
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def bipolar_sigmoid(x):
+    return (2 / (1 + np.exp(-x))) - 1
+
+x = np.linspace(-10, 10, 300)
+y = bipolar_sigmoid(x)
+
+print("Minimum =", np.min(y))
+print("Maximum =", np.max(y))
+
+plt.figure(figsize=(5, 3))
+plt.plot(x, y, color='red')
+plt.title("Bipolar Sigmoid")
+plt.grid(True)
+plt.show()
+
+
+QUESTION 3: Plot binary sigmoid and bipolar sigmoid on the same graph and compare their output ranges.
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def binary_sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def bipolar_sigmoid(x):
+    return (2 / (1 + np.exp(-x))) - 1
+
+x = np.linspace(-8, 8, 300)
+
+plt.figure(figsize=(6, 3))
+plt.plot(x, binary_sigmoid(x), label='Binary')
+plt.plot(x, bipolar_sigmoid(x), label='Bipolar')
+plt.legend()
+plt.grid(True)
+plt.title("Binary vs Bipolar Sigmoid")
+plt.show()
+
+
+QUESTION 4: Write a program to calculate the derivative of the binary sigmoid and plot it.
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+def derivative(x):
+    s = sigmoid(x)
+    return s * (1 - s)
+
+x = np.linspace(-8, 8, 300)
+
+plt.figure(figsize=(5, 3))
+plt.plot(x, derivative(x))
+plt.title("Derivative of Binary Sigmoid")
+plt.grid(True)
+plt.show()
+
+
+QUESTION 5: Evaluate the sigmoid output for inputs from -100 to 100 and explain saturation.
+
+import numpy as np
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+x = np.array([-100, -50, -20, -10, -5, 0, 5, 10, 20, 50, 100])
+y = sigmoid(x)
+
+for i, j in zip(x, y):
+    print("Input =", i, "Output =", j)
+
+
+QUESTION 6: Plot sigmoid functions for scaling factors 0.5, 1, 2, and 5.
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def sigmoid(x, a):
+    return 1 / (1 + np.exp(-a * x))
+
+x = np.linspace(-10, 10, 300)
+
+for a in [0.5, 1, 2, 5]:
+    plt.plot(x, sigmoid(x, a), label=a)
+
+plt.legend()
+plt.grid(True)
+plt.title("Scaled Sigmoid Functions")
+plt.show()
+
+
+QUESTION 7: Generate random inputs and classify them using a sigmoid threshold of 0.5.
+
+import numpy as np
+
+np.random.seed(0)
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+x = np.random.randn(20)
+prob = sigmoid(x)
+prediction = (prob >= 0.5).astype(int)
+
+print("Inputs")
+print(x)
+
+print("\nProbabilities")
+print(prob)
+
+print("\nPredictions")
+print(prediction)
+
+
+QUESTION 8: Compute mean, variance, minimum and maximum of binary and bipolar sigmoid outputs.
+
+import numpy as np
+
+def binary(x):
+    return 1 / (1 + np.exp(-x))
+
+def bipolar(x):
+    return (2 / (1 + np.exp(-x))) - 1
+
+x = np.linspace(-10, 10, 500)
+
+b = binary(x)
+bp = bipolar(x)
+
+print("Binary Sigmoid")
+print("Mean =", np.mean(b))
+print("Variance =", np.var(b))
+print("Minimum =", np.min(b))
+print("Maximum =", np.max(b))
+
+print("\nBipolar Sigmoid")
+print("Mean =", np.mean(bp))
+print("Variance =", np.var(bp))
+print("Minimum =", np.min(bp))
+print("Maximum =", np.max(bp))
+
+
+==============================
+SCT PRACTICAL 3
+==============================
+
+McCulloch-Pitts Neural Network
+
+
+QUESTION 1: Write a Python program to simulate the AND logic gate using the McCulloch-Pitts neuron model. Display the truth table.
+
+import pandas as pd
+
+def mcp_neuron(inputs, weights, threshold):
+    total = sum(i * w for i, w in zip(inputs, weights))
+    return 1 if total >= threshold else 0
+
+weights = [1, 1]
+threshold = 2
+
+truth_table = []
+
+for x1 in [0, 1]:
+    for x2 in [0, 1]:
+        output = mcp_neuron([x1, x2], weights, threshold)
+        truth_table.append((x1, x2, output))
+
+df = pd.DataFrame(
+    truth_table,
+    columns=["Input1", "Input2", "AND Output"]
+)
+
+print(df)
+
+
+QUESTION 2: Simulate an OR gate using an MCP neuron with appropriate weights and threshold.
+
+import pandas as pd
+
+def neuron(inputs, weights, threshold):
+    return int(sum(i * w for i, w in zip(inputs, weights)) >= threshold)
+
+weights = [1, 1]
+threshold = 1
+
+data = []
+
+for a in [0, 1]:
+    for b in [0, 1]:
+        data.append((a, b, neuron([a, b], weights, threshold)))
+
+df = pd.DataFrame(data, columns=["A", "B", "OR"])
+
+print(df)
+
+
+QUESTION 3: Implement the NOT gate using the MCP neuron.
+
+import pandas as pd
+
+def neuron(x, weight, threshold):
+    return int(weight * x >= threshold)
+
+weight = -1
+threshold = 0
+
+table = []
+
+for x in [0, 1]:
+    output = neuron(x, weight, threshold)
+    table.append((x, output))
+
+df = pd.DataFrame(table, columns=["Input", "NOT"])
+
+print(df)
+
+
+QUESTION 4: Develop an MCP neuron that simulates the NAND gate.
+
+import pandas as pd
+
+def neuron(inputs, weights, threshold):
+    total = sum(i * w for i, w in zip(inputs, weights))
+    return int(total >= threshold)
+
+weights = [-2, -2]
+threshold = -3
+
+table = []
+
+for a in [0, 1]:
+    for b in [0, 1]:
+        table.append([a, b, neuron([a, b], weights, threshold)])
+
+df = pd.DataFrame(table, columns=["A", "B", "NAND"])
+
+print(df)
+
+
+QUESTION 5: Write a program to simulate the NOR gate using the MCP neuron model.
+
+import pandas as pd
+
+def neuron(inputs, weights, threshold):
+    return int(sum(i * w for i, w in zip(inputs, weights)) >= threshold)
+
+weights = [-1, -1]
+threshold = 0
+
+table = []
+
+for a in [0, 1]:
+    for b in [0, 1]:
+        output = neuron([a, b], weights, threshold)
+        table.append([a, b, output])
+
+df = pd.DataFrame(table, columns=["A", "B", "NOR"])
+
+print(df)
+
+
+QUESTION 6: Implement the XOR gate using a network of MCP neurons (AND, OR, NOT).
+
+import pandas as pd
+
+def AND(a, b):
+    return int(a + b >= 2)
+
+def OR(a, b):
+    return int(a + b >= 1)
+
+def NOT(x):
+    return int(-x >= 0)
+
+table = []
+
+for a in [0, 1]:
+    for b in [0, 1]:
+        or1 = OR(a, b)
+        and1 = AND(a, b)
+        not1 = NOT(and1)
+        xor = AND(or1, not1)
+
+        table.append([a, b, xor])
+
+df = pd.DataFrame(table, columns=["A", "B", "XOR"])
+
+print(df)
+
+
+QUESTION 7: Study how different threshold values affect the output of an MCP neuron.
+
+weights = [1, 1]
+inputs = [[0, 0], [0, 1], [1, 0], [1, 1]]
+
+for threshold in [0, 1, 2, 3]:
+    print("\nThreshold =", threshold)
+
+    for x in inputs:
+        output = int(sum(i * w for i, w in zip(x, weights)) >= threshold)
+        print(x, "->", output)
+
+
+QUESTION 8: Design an MCP neuron that produces output 1 only when both inputs are 1, otherwise 0. Verify the truth table and explain why it behaves as an AND gate.
+
+import pandas as pd
+
+weights = [2, 2]
+threshold = 4
+
+table = []
+
+for x1 in [0, 1]:
+    for x2 in [0, 1]:
+        total = x1 * weights[0] + x2 * weights[1]
+        output = int(total >= threshold)
+
+        table.append([x1, x2, total, output])
+
+df = pd.DataFrame(
+    table,
+    columns=["Input1", "Input2", "Weighted Sum", "Output"]
+)
+
+print(df)
+
+==============================
+SCT PRACTICAL 4
+==============================
+
+Learning Rules: Hebbian and Delta Rule
+
+
+QUESTION 1: Write a Python program to implement the Hebbian learning rule for a single neuron. Given input vectors and target outputs, update the weights after each training sample and display the final weights.
+
+import numpy as np
+
+X = np.array([[1, 0], [0, 1], [1, 1], [0, 0]])
+targets = np.array([1, 1, 1, 0])
+
+weights = np.zeros(2)
+
+print("Initial weights:", weights)
+
+for x, t in zip(X, targets):
+    weights = weights + x * t
+    print(f"Input={x}, Target={t}, Updated weights={weights}")
+
+print("Final weights:", weights)
+
+
+QUESTION 2: Implement the Delta learning rule using a learning rate of 0.1. Display the error and updated weights after each iteration.
+
+import numpy as np
+
+X = np.array([[1, 0],
+              [0, 1],
+              [1, 1]])
+
+targets = np.array([1, 1, 0])
+
+weights = np.zeros(2)
+learning_rate = 0.1
+
+for epoch in range(5):
+    print("\nEpoch", epoch + 1)
+
+    for x, t in zip(X, targets):
+        output = np.dot(x, weights)
+        error = t - output
+        weights = weights + learning_rate * error * x
+
+        print("Input:", x,
+              "Output:", round(output, 3),
+              "Error:", round(error, 3),
+              "Weights:", weights)
+
+print("\nFinal weights:", weights)
+
+
+QUESTION 3: Implement both Hebbian and Delta learning rules on the same dataset and compare the final weight vectors.
+
+import numpy as np
+
+X = np.array([[1, 0], [0, 1], [1, 1]])
+targets = np.array([1, 1, 0])
+
+hebb = np.zeros(2)
+
+for x, t in zip(X, targets):
+    hebb = hebb + x * t
+
+print("Hebbian Weights:", hebb)
+
+# Delta Learning
+delta = np.zeros(2)
+lr = 0.1
+
+for epoch in range(10):
+    for x, t in zip(X, targets):
+        out = np.dot(x, delta)
+        error = t - out
+        delta = delta + lr * error * x
+
+print("Delta Weights:", delta)
+
+
+QUESTION 4: Implement the Delta rule using learning rates 0.1, 0.5, and 0.9. Compare the final weights.
+
+import numpy as np
+
+X = np.array([[1, 0],
+              [0, 1],
+              [1, 1]])
+
+t = np.array([1, 1, 0])
+
+for lr in [0.1, 0.5, 0.9]:
+    weights = np.zeros(2)
+
+    for epoch in range(10):
+        for x, target in zip(X, t):
+            out = np.dot(weights, x)
+            error = target - out
+            weights += lr * error * x
+
+    print("Learning rate:", lr)
+    print("Weights:", weights, "\n")
+
+
+QUESTION 5: Implement the Delta rule for 20 epochs and observe weight convergence.
+
+import numpy as np
+
+X = np.array([[1, 0],
+              [0, 1],
+              [1, 1]])
+
+T = np.array([1, 1, 0])
+
+weights = np.zeros(2)
+lr = 0.1
+
+for epoch in range(20):
+    for x, t in zip(X, T):
+        out = np.dot(weights, x)
+        error = t - out
+        weights += lr * error * x
+
+    print("Epoch", epoch + 1, "Weights", weights)
+
+
+QUESTION 6: Train a neuron using the Delta rule and calculate the Mean Squared Error after each epoch.
+
+import numpy as np
+
+X = np.array([
+    [1, 0],
+    [0, 1],
+    [1, 1]
+])
+
+T = np.array([1, 1, 0])
+
+weights = np.zeros(2)
+lr = 0.1
+
+for epoch in range(10):
+    mse = 0
+
+    for x, t in zip(X, T):
+        out = np.dot(weights, x)
+        error = t - out
+        mse += error ** 2
+        weights += lr * error * x
+
+    mse /= len(T)
+
+    print("Epoch:", epoch + 1, "MSE:", round(mse, 4))
+
+
+QUESTION 7: Implement the Delta learning rule and display the final weights and predictions.
+
+import numpy as np
+
+X = np.array([
+    [1, 0],
+    [0, 1],
+    [1, 1]
+])
+
+T = np.array([1, 1, 0])
+
+weights = np.zeros(2)
+lr = 0.01
+
+for epoch in range(20):
+    for x, t in zip(X, T):
+        out = np.dot(weights, x)
+        error = t - out
+        weights += lr * error * x
+
+print("Final weights:", weights)
+print()
+
+for x in X:
+    prediction = np.dot(weights, x)
+    print(x, "Prediction:", round(prediction, 3))
+
+
+QUESTION 8: Implement the Delta learning rule and plot the Mean Squared Error versus Epoch.
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+X = np.array([
+    [1, 0],
+    [0, 1],
+    [1, 1]
+])
+
+T = np.array([1, 1, 0])
+
+weights = np.zeros(2)
+lr = 0.1
+
+errors = []
+
+for epoch in range(20):
+    mse = 0
+
+    for x, t in zip(X, T):
+        out = np.dot(weights, x)
+        error = t - out
+        mse += error ** 2
+        weights += lr * error * x
+
+    errors.append(mse / len(T))
+
+plt.plot(range(1, 21), errors, marker='o')
+plt.xlabel("Epoch")
+plt.ylabel("MSE")
+plt.title("MSE vs Epoch")
+plt.grid(True)
+plt.show()
+
+
+==============================
+SCT PRACTICAL 5
+==============================
+
+Implement Forward Propagation for a Single Neuron
+
+
+QUESTION 1: Write a Python program to implement forward propagation for a single neuron using the sigmoid activation function. Compute the neuron output for the given inputs.
+
+import numpy as np
+
+# Input
+X = np.array([0.5, 0.8])
+
+# Initial weights
+W = np.array([0.2, -0.3])
+
+# Bias
+b = 0.1
+
+# Sigmoid activation
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+net = np.dot(X, W) + b
+output = sigmoid(net)
+
+print(output)
+print("Net Input:", round(net, 4))
+print("Neuron Output:", round(output, 4))
+
+
+QUESTION 2: Implement a program to calculate the output error of a neuron using Mean Squared Error (MSE).
+
+target = 1
+output = 0.72
+
+error = target - output
+mse = error ** 2 / 2
+
+print("Output:", output)
+print("Target:", target)
+print("Error:", round(error, 4))
+print("Mean Squared Error:", round(mse, 4))
+
+
+QUESTION 3: Write a Python program to perform one iteration of weight update using the gradient descent rule.
+
+import numpy as np
+
+learning_rate = 0.1
+
+weights = np.array([0.4, -0.2])
+inputs = np.array([1, 0])
+
+gradient = np.array([0.5, -0.10])
+
+new_weights = weights - learning_rate * gradient
+
+print("Old weights:", weights)
+print("Updated weights:", new_weights)
+
+
+QUESTION 4: Implement one training iteration of a single-layer neural network using the backpropagation algorithm.
+
+import numpy as np
+
+X = np.array([1, 0])
+target = 1
+
+weights = np.array([0.5, -0.3])
+bias = 0.2
+lr = 0.1
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+net = np.dot(X, weights) + bias
+output = sigmoid(net)
+
+error = target - output
+delta = error * output * (1 - output)
+
+weights += lr * delta * X
+bias += lr * delta
+
+print("Output:", output)
+print("Updated weights:", weights)
+print("Updated Bias:", bias)
+
+
+QUESTION 5: Train a single neuron for 100 epochs using the backpropagation algorithm and observe weight convergence.
+
+import numpy as np
+
+X = np.array([1, 0])
+target = 1
+
+weights = np.array([0.2, -0.1])
+bias = 0.0
+lr = 0.2
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+for epoch in range(100):
+    net = np.dot(X, weights) + bias
+    out = sigmoid(net)
+
+    error = target - out
+    delta = error * out * (1 - out)
+
+    weights += lr * delta * X
+    bias += lr * delta
+
+print("Final Output:", out)
+print("Weights:", weights)
+print("Bias:", bias)
+
+
+QUESTION 6: Train a neural network and plot the Mean Squared Error against epochs.
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+X = np.array([1, 0])
+target = 1
+
+weights = np.array([0.1, -0.2])
+bias = 0
+lr = 0.2
+
+errors = []
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+for epoch in range(100):
+    out = sigmoid(np.dot(X, weights) + bias)
+
+    error = target - out
+    mse = 0.5 * error ** 2
+    errors.append(mse)
+
+    delta = error * out * (1 - out)
+
+    weights += lr * delta * X
+    bias += lr * delta
+
+plt.plot(errors)
+plt.xlabel("Epoch")
+plt.ylabel("Loss")
+plt.title("Training Error")
+plt.grid(True)
+plt.show()
+
+print("Final Output:", out)
+print("Final Weights:", weights)
+print("Final Bias:", bias)
+
+
+QUESTION 7: Compare the training performance for learning rates 0.01, 0.1, and 0.5.
+
+import numpy as np
+
+X = np.array([1, 0])
+target = 1
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+for lr in [0.01, 0.1, 0.5]:
+    weights = np.array([0.2, -0.1])
+    bias = 0
+
+    for epoch in range(50):
+        out = sigmoid(np.dot(X, weights) + bias)
+
+        error = target - out
+        delta = error * out * (1 - out)
+
+        weights += lr * delta * X
+        bias += lr * delta
+
+    print("Learning Rate:", lr)
+    print("Output:", round(out, 4))
+    print("Weights:", weights)
+    print()
+
+
+QUESTION 8: Implement a single-layer neural network using backpropagation to learn the AND gate.
+
+import numpy as np
+
+X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+T = np.array([0, 0, 0, 1])
+
+weights = np.random.rand(2)
+bias = np.random.rand()
+
+lr = 0.2
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+
+for epoch in range(500):
+    for x, t in zip(X, T):
+        out = sigmoid(np.dot(x, weights) + bias)
+
+        error = t - out
+        delta = error * out * (1 - out)
+
+        weights += lr * delta * x
+        bias += lr * delta
+
+print("Predictions")
+
+for x in X:
+    y = sigmoid(np.dot(x, weights) + bias)
+    print(x, "->", round(y, 3))
+
+==============================
+SCT PRACTICAL 6
+==============================
+
+Hopfield Network for Associative Memory
+
+
+Question 1. Write a Python program to store a single bipolar pattern in a Hopfield network by computing the weight matrix using the Hebbian learning rule.
+
+import numpy as np
+
+pattern = np.array([1, -1, 1, -1])
+w = np.outer(pattern, pattern)
+np.fill_diagonal(w, 0)
+
+print("Stored Pattern:")
+print(pattern)
+
+print("\nWeight Matrix:")
+print(w)
+
+
+Question 2. Implement a Hopfield network that stores three bipolar patterns. Compute the final weight matrix.
+
+import numpy as np
+
+patterns = np.array([
+    [1, -1, 1, -1],
+    [1, 1, -1, -1],
+    [-1, 1, -1, 1]
+])
+
+n = patterns.shape[1]
+w = np.zeros((n, n))
+
+for p in patterns:
+    w += np.outer(p, p)
+
+np.fill_diagonal(w, 0)
+
+print("Weight Matrix:")
+print(w)
+
+
+Question 3. Store one pattern and recall it from the Hopfield network using synchronous updating.
+
+import numpy as np
+
+pattern = np.array([1, -1, 1, -1])
+w = np.outer(pattern, pattern)
+np.fill_diagonal(w, 0)
+
+test = np.array([1, -1, 1, -1])
+output = np.sign(w @ test)
+
+print("Input:", test)
+print("Recovered:", output)
+
+
+Question 4. Store a pattern in a Hopfield network and recover it from a noisy input pattern.
+
+import numpy as np
+
+pattern = np.array([1, -1, 1, -1])
+w = np.outer(pattern, pattern)
+np.fill_diagonal(w, 0)
+
+noisy = np.array([1, -1, -1, -1])
+
+print("Noisy Pattern")
+print(noisy)
+
+recovered = np.sign(w @ noisy)
+
+print("\nRecovered Pattern")
+print(recovered)
+
+
+Question 5. Implement asynchronous neuron updating and observe convergence to a stable state.
+
+import numpy as np
+
+pattern = np.array([1, -1, 1, -1])
+w = np.outer(pattern, pattern)
+np.fill_diagonal(w, 0)
+
+state = np.array([1, -1, -1, -1])
+
+print("Initial:", state)
+
+for i in range(len(state)):
+    state[i] = 1 if np.dot(w[i], state) >= 0 else -1
+
+print("Stable State:", state)
+
+
+Question 6. Write a Python program to compute the energy of a Hopfield network for a given state.
+
+import numpy as np
+
+pattern = np.array([1, -1, 1, -1])
+w = np.outer(pattern, pattern)
+np.fill_diagonal(w, 0)
+
+state = np.array([1, -1, 1, -1])
+
+energy = -0.5 * np.dot(state, np.dot(w, state))
+
+print("Energy =", energy)
+
+
+Question 7. Show that the Hopfield network energy decreases during asynchronous updates.
+
+import numpy as np
+
+pattern = np.array([1, -1, 1, -1])
+w = np.outer(pattern, pattern)
+np.fill_diagonal(w, 0)
+
+state = np.array([1, -1, -1, -1])
+
+def energy(s, w):
+    return -0.5 * np.dot(s, np.dot(w, s))
+
+print("Initial Energy:", energy(state, w))
+
+for i in range(len(state)):
+    state[i] = 1 if np.dot(w[i], state) >= 0 else -1
+    print("Energy:", energy(state, w))
+
+
+Question 8. Store two patterns in a Hopfield network and test whether different noisy inputs converge to the correct stored memory.
+
+import numpy as np
+
+patterns = np.array([
+    [1, -1, 1, -1],
+    [-1, 1, -1, 1]
+])
+
+w = np.zeros((4, 4))
+
+for p in patterns:
+    w += np.outer(p, p)
+
+np.fill_diagonal(w, 0)
+
+tests = [
+    [1, -1, -1, -1],
+    [-1, 1, -1, -1]
+]
+
+for t in tests:
+    t = np.array(t)
+    recovered = np.sign(w @ t)
+
+    print("Input:", t)
+    print("Recovered:", recovered)
+    print()
+
+==============================
+SCT PRACTICAL 7
+==============================
+
+Compute Gaussian Radial Basis Function
+
+
+Question 1. Write a Python program to compute the Gaussian Radial Basis Function (RBF) output for different input values with a fixed center and spread (σ).
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+def gaussian_rbf(x, center, sigma):
+    return np.exp(-((x - center)**2) / (2 * sigma**2))
+
+x = np.linspace(-5, 5, 200)
+center = 0
+sigma = 1
+
+y = gaussian_rbf(x, center, sigma)
+
+plt.figure(figsize=(5, 3))
+plt.plot(x, y)
+plt.title("Gaussian Radial Basis Function")
+plt.xlabel("Input")
+plt.ylabel("RBF Output")
+plt.grid(True)
+plt.show()
+
+
+Question 2. Given a dataset and selected RBF centers, compute the Euclidean distance between each sample and every center.
+
+import numpy as np
+
+X = np.array([[1, 2], [2, 3], [3, 4]])
+centers = np.array([[1, 1], [3, 3]])
+
+for i, x in enumerate(X):
+    print("Sample", i + 1)
+    for j, c in enumerate(centers):
+        distance = np.linalg.norm(x - c)
+        print("Center", j + 1, "Distance =", round(distance, 3))
+    print()
+
+
+Question 3. Implement the hidden layer of an RBF network by computing Gaussian activations for all input samples.
+
+import numpy as np
+
+X = np.array([[1], [2], [3], [4]])
+centers = np.array([1, 3])
+sigma = 1
+
+H = []
+
+for x in X:
+    row = []
+    for c in centers:
+        phi = np.exp(-((x - c)**2) / (2 * sigma**2))
+        row.append(phi[0])
+    H.append(row)
+
+H = np.array(H)
+
+print("Hidden Layer Activations")
+print(H)
+
+
+Question 4. Train the output layer of an RBF network using the least squares method.
+
+import numpy as np
+
+X = np.array([[1], [2], [3], [4]])
+T = np.array([2, 4, 6, 8])
+centers = np.array([1, 3])
+sigma = 1
+
+H = []
+
+for x in X:
+    row = []
+    for c in centers:
+        row.append(
+            np.exp(-((x - c)**2) / (2 * sigma**2))[0]
+        )
+    H.append(row)
+
+H = np.array(H)
+weights = np.linalg.pinv(H) @ T
+
+print("Output Layer Weights")
+print(weights)
+
+
+Question 5. Use an RBF network to approximate the function y = x².
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+X = np.linspace(-2, 2, 20)
+Y = X**2
+
+centers = np.array([-2, -1, 0, 1, 2])
+sigma = 0.8
+
+H = []
+
+for x in X:
+    H.append(
+        np.exp(-((x - centers)**2) / (2 * sigma**2))
+    )
+
+H = np.array(H)
+weights = np.linalg.pinv(H) @ Y
+prediction = H @ weights
+
+plt.plot(X, Y, label="Actual")
+plt.plot(X, prediction, '--', label="RBF Prediction")
+plt.legend()
+plt.grid(True)
+plt.show()
+
+
+Question 6. Implement an RBF network to classify one-dimensional input data into two classes.
+
+import numpy as np
+
+X = np.array([-2, -1, 0, 1, 2])
+T = np.array([0, 0, 0, 1, 1])
+
+centers = np.array([-1, 1])
+sigma = 1
+
+H = []
+
+for x in X:
+    H.append(
+        np.exp(-((x - centers)**2) / (2 * sigma**2))
+    )
+
+H = np.array(H)
+weights = np.linalg.pinv(H) @ T
+prediction = H @ weights
+
+print("Predicted Outputs")
+print(np.round(prediction, 3))
+
+
+Question 7. Plot Gaussian RBF curves for different values of σ and compare their shapes.
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+X = np.linspace(-5, 5, 300)
+
+for sigma in [0.5, 1, 2]:
+    y = np.exp(-(X**2) / (2 * sigma**2))
+    plt.plot(X, y, label=f"σ={sigma}")
+
+plt.legend()
+plt.grid(True)
+plt.title("Effect of Sigma")
+plt.xlabel("Input")
+plt.ylabel("RBF Output")
+plt.show()
+
+
+Question 8. Train an RBF network and compare the actual outputs with predicted outputs in tabular form.
+
+import numpy as np
+import pandas as pd
+
+X = np.array([-2, -1, 0, 1, 2])
+Y = X**2
+
+centers = np.array([-2, 0, 2])
+sigma = 1
+
+H = []
+
+for x in X:
+    H.append(
+        np.exp(-((x - centers)**2) / (2 * sigma**2))
+    )
+
+H = np.array(H)
+weights = np.linalg.pinv(H) @ Y
+prediction = H @ weights
+
+table = pd.DataFrame({
+    "Input": X,
+    "Actual": Y,
+    "Predicted": np.round(prediction, 3)
+})
+
+print(table)
+
+==============================
+SCT PRACTICAL 8
+==============================
+
+Implement a Basic Self-Organizing Map for 2D Data
+
+
+Question 1. Implement a 2 × 2 Self-Organizing Map (SOM) to cluster a set of two-dimensional data points into different groups.
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Datasets
+X = np.array([
+    [1, 1],
+    [1.5, 1.2],
+    [2, 1.5],
+    [8, 8],
+    [8.5, 8.2],
+    [9, 8.5],
+    [2, 8.2],
+    [8, 1],
+    [8.5, 1.5],
+    [9, 2]
+])
+
+# SOM dimensions
+rows = 2
+cols = 2
+
+# Randomly initialize weights
+np.random.seed(42)
+weights = np.random.rand(rows, cols, 2) * 10
+
+learning_rate = 0.5
+epochs = 100
+
+# SOM training
+for epoch in range(epochs):
+    for x in X:
+        # Calculate distances
+        distances = np.linalg.norm(weights - x, axis=2)
+
+        # Find BMU
+        bmu = np.unravel_index(
+            np.argmin(distances),
+            distances.shape
+        )
+
+        # Update BMU
+        weights[bmu] += learning_rate * (x - weights[bmu])
+
+    # Reduce learning rate
+    learning_rate *= 0.99
+
+print("Final SOM weights:")
+print(weights)
+
+# Assign each point to a neuron
+clusters = []
+
+for x in X:
+    distances = np.linalg.norm(weights - x, axis=2)
+    bmu = np.unravel_index(
+        np.argmin(distances),
+        distances.shape
+    )
+    clusters.append(bmu)
+
+print("\nCluster assignments:")
+
+for x, c in zip(X, clusters):
+    print(x, "->", c)
+
+# Visualization
+plt.figure(figsize=(7, 5))
+
+plt.scatter(X[:, 0], X[:, 1], s=80)
+
+for i in range(rows):
+    for j in range(cols):
+        plt.scatter(
+            weights[i, j, 0],
+            weights[i, j, 1],
+            marker='X',
+            s=200
+        )
+
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.title("2 x 2 Self-Organizing Map")
+plt.grid()
+plt.show()
+
+
+Question 2. Implement a SOM clustering algorithm and investigate how different learning rates affect the final neuron positions.
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Dataset
+X = np.array([
+    [1, 1],
+    [1.5, 1.2],
+    [2, 1.5],
+    [8, 8],
+    [8.5, 8.2],
+    [9, 8.5],
+    [1, 8],
+    [1.5, 8.5],
+    [2, 8.2]
+])
+
+# Different learning rates to test
+learning_rates = [0.1, 0.5, 0.9]
+
+for lr in learning_rates:
+
+    # Set random seed for reproducible results
+    np.random.seed(42)
+
+    # Initialize 2 x 2 SOM weights
+    weights = np.random.rand(2, 2, 2) * 10
+
+    learning_rate = lr
+
+    # Training
+    for epoch in range(100):
+        for x in X:
+
+            # Calculate distances between input and all neurons
+            distances = np.linalg.norm(weights - x, axis=2)
+
+            # Find BMU (Best Matching Unit)
+            bmu = np.unravel_index(
+                np.argmin(distances),
+                distances.shape
+            )
+
+            # Update BMU
+            weights[bmu] += learning_rate * (
+                x - weights[bmu]
+            )
+
+    # Print final weights
+    print("\nLearning Rate:", lr)
+    print(weights)
+
+    # Plot
+    plt.figure(figsize=(6, 4))
+
+    # Plot data points
+    plt.scatter(
+        X[:, 0],
+        X[:, 1],
+        label="Data"
+    )
+
+    # Plot SOM neurons
+    for i in range(2):
+        for j in range(2):
+            plt.scatter(
+                weights[i, j, 0],
+                weights[i, j, 1],
+                marker='x',
+                s=200,
+                linewidths=3
+            )
+
+    plt.title("SOM with Learning Rate = " + str(lr))
+    plt.xlabel("Feature 1")
+    plt.ylabel("Feature 2")
+    plt.legend()
+    plt.grid()
+    plt.show()
+
+
+Question 3. A company has customer data containing annual income and annual spending. Use a Self-Organizing Map to group customers according to their purchasing behavior.
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Customer data (Annual Income, Spending)
+X = np.array([
+    [20, 15],
+    [25, 20],
+    [30, 25],
+    [35, 30],
+    [70, 65],
+    [75, 70],
+    [80, 75],
+    [85, 80],
+    [40, 75],
+    [45, 80],
+    [50, 85],
+    [55, 90]
+], dtype=float)
+
+# Normalize data
+X_norm = (X - X.min(axis=0)) / (
+    X.max(axis=0) - X.min(axis=0)
+)
+
+# SOM dimensions
+rows = 2
+cols = 2
+
+np.random.seed(10)
+weights = np.random.rand(rows, cols, 2)
+
+learning_rate = 0.5
+
+# Training
+for epoch in range(200):
+    for x in X_norm:
+
+        # Calculate distances
+        distances = np.linalg.norm(
+            weights - x,
+            axis=2
+        )
+
+        # Find BMU (Best Matching Unit)
+        bmu = np.unravel_index(
+            np.argmin(distances),
+            distances.shape
+        )
+
+        # Update weights
+        weights[bmu] += learning_rate * (
+            x - weights[bmu]
+        )
+
+    # Reduce learning rate
+    learning_rate *= 0.98
+
+# Determine BMU
+clusters = []
+
+for x in X_norm:
+
+    distances = np.linalg.norm(
+        weights - x,
+        axis=2
+    )
+
+    bmu = np.unravel_index(
+        np.argmin(distances),
+        distances.shape
+    )
+
+    clusters.append(bmu)
+
+print("Customer Cluster Assignments:\n")
+
+for i, cluster in enumerate(clusters):
+    print(
+        "Customer", i + 1,
+        "Income =", X[i, 0],
+        "Spending =", X[i, 1],
+        "-> SOM neuron", cluster
+    )
+
+# Visualization
+plt.figure(figsize=(7, 5))
+
+plt.scatter(
+    X[:, 0],
+    X[:, 1],
+    s=100
+)
+
+plt.xlabel("Annual Income")
+plt.ylabel("Annual Spending")
+plt.title("Customer Segmentation Using SOM")
+plt.grid()
+plt.show()
+
+
+Question 4. Implement a simplified Adaptive Resonance Theory (ART-1) network for binary input patterns.
+
+import numpy as np
+
+# Binary input patterns
+patterns = np.array([
+    [1, 0, 1, 1, 0, 0],
+    [1, 0, 1, 0, 0, 0],
+    [0, 0, 1, 1, 0, 0],
+    [1, 1, 1, 1, 0, 0],
+    [0, 0, 0, 0, 1, 1],
+    [0, 0, 0, 0, 1, 1]
+])
+
+# Vigilance parameter
+rho = 0.7
+
+categories = []
+
+for pattern in patterns:
+
+    assigned = False
+
+    for i in range(len(categories)):
+
+        prototype = categories[i]
+
+        # Calculate similarity
+        intersection = np.sum(pattern * prototype)
+        pattern_size = np.sum(pattern)
+
+        similarity = intersection / pattern_size
+
+        print(
+            "Pattern:", pattern,
+            "Category:", i + 1,
+            "Similarity:", round(similarity, 2)
+        )
+
+        # Vigilance test
+        if similarity >= rho:
+
+            # Update prototype
+            categories[i] = prototype * pattern
+
+            assigned = True
+            break
+
+    # Create new category
+    if not assigned:
+        categories.append(pattern.copy())
+
+print("\nFinal ART Categories:")
+
+for i, category in enumerate(categories):
+    print(
+        "Category", i + 1,
+        ":", category
+    )
+
+
+Question 5. Investigate the Stability-Plasticity Dilemma in ART by comparing vigilance values 0.4, 0.7, and 0.9.
+
+import numpy as np
+
+patterns = np.array([
+    [1, 1, 1, 0, 0, 0],
+    [1, 1, 0, 0, 0, 0],
+    [1, 0, 1, 0, 0, 0],
+    [0, 0, 0, 1, 1, 1],
+    [0, 0, 0, 1, 1, 0],
+    [0, 0, 0, 1, 0, 1]
+])
+
+vigilance_values = [0.4, 0.7, 0.9]
+
+for rho in vigilance_values:
+
+    categories = []
+    assignments = []
+
+    for pattern in patterns:
+
+        assigned = False
+
+        for i, prototype in enumerate(categories):
+
+            similarity = (
+                np.sum(pattern * prototype)
+                / np.sum(pattern)
+            )
+
+            if similarity >= rho:
+
+                categories[i] = prototype * pattern
+                assignments.append(i + 1)
+                assigned = True
+                break
+
+        if not assigned:
+            categories.append(pattern.copy())
+            assignments.append(len(categories))
+
+    print("\nVigilance =", rho)
+
+    print("Number of categories:", len(categories))
+    print("Assignments:", assignments)
+    print("Categories:")
+
+    for i, category in enumerate(categories):
+        print(i + 1, category)
+
+
+Question 6. Implement SOM-based and ART-based clustering for binary patterns and compare the number of clusters, cluster assignments, learning mechanisms, and ability to accommodate new patterns.
+
+import numpy as np
+
+# Binary input patterns
+patterns = np.array([
+    [1, 1, 1, 0, 0, 0],
+    [1, 1, 0, 0, 0, 0],
+    [1, 0, 1, 0, 0, 0],
+    [0, 0, 0, 1, 1, 0],
+    [0, 0, 0, 1, 0, 1],
+    [0, 0, 0, 1, 1, 1]
+])
+
+# --------------------------------
+# SOM (Self-Organizing Map)
+# --------------------------------
+
+np.random.seed(42)
+
+num_neurons = 4
+
+weights = np.random.rand(
+    num_neurons,
+    patterns.shape[1]
+)
+
+learning_rate = 0.5
+
+# Training
+for epoch in range(10):
+
+    for x in patterns:
+
+        # Calculate distance from each neuron
+        distances = np.linalg.norm(
+            weights - x,
+            axis=1
+        )
+
+        # Find winning neuron
+        winner = np.argmin(distances)
+
+        # Update winner weights
+        weights[winner] += (
+            learning_rate * (x - weights[winner])
+        )
+
+    learning_rate *= 0.98
+
+# Find final SOM assignments
+som_assignments = []
+
+for x in patterns:
+
+    distances = np.linalg.norm(
+        weights - x,
+        axis=1
+    )
+
+    winner = np.argmin(distances)
+
+    som_assignments.append(winner + 1)
+
+print("SOM Assignments:", som_assignments)
+
+
+# --------------------------------
+# ART (Adaptive Resonance Theory)
+# --------------------------------
+
+def art_clustering(patterns, rho):
+
+    categories = []
+    assignments = []
+
+    for pattern in patterns:
+
+        assigned = False
+
+        for i, prototype in enumerate(categories):
+
+            similarity = (
+                np.sum(pattern * prototype)
+                / np.sum(pattern)
+            )
+
+            if similarity >= rho:
+
+                categories[i] = prototype * pattern
+                assignments.append(i + 1)
+                assigned = True
+                break
+
+        if not assigned:
+
+            categories.append(pattern.copy())
+            assignments.append(len(categories))
+
+    return categories, assignments
+
+
+rho = 0.7
+
+categories, art_assignments = art_clustering(
+    patterns, rho
+)
+
+print("ART Assignments:", art_assignments)
+
+
+# --------------------------------
+# Comparison
+# --------------------------------
+
+print("\n----- Comparison -----")
+
+print("Number of SOM neurons:", num_neurons)
+print("Number of ART categories:", len(categories))
+
+print("SOM Assignments:", som_assignments)
+print("ART Assignments:", art_assignments)
+
+print("SOM learns using weight updates.")
+print("ART learns using vigilance and category matching.")
+print("ART can create new categories for new patterns.")
+
+
+==============================
+SCT PRACTICAL 9
+==============================
+
+Analyze and implement linear separation techniques for classification problems using neural networks.
+
+
+Question 1. Consider the following two-dimensional binary classification dataset. Plot the two classes, determine whether the dataset is linearly separable, plot a suitable decision boundary, and verify that all points are correctly classified.
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Class 0
+class0 = np.array([
+    [1, 1],
+    [2, 1],
+    [1, 2],
+    [2, 2]
+])
+
+# Class 1
+class1 = np.array([
+    [5, 5],
+    [6, 5],
+    [5, 6],
+    [6, 6]
+])
+
+# Plot data
+plt.scatter(class0[:, 0], class0[:, 1], label="Class 0")
+plt.scatter(class1[:, 0], class1[:, 1], label="Class 1")
+
+# Decision boundary: x + y = 7
+x = np.linspace(0, 7, 100)
+y = 7 - x
+
+plt.plot(x, y, label="Decision Boundary")
+
+plt.xlabel("Feature X1")
+plt.ylabel("Feature X2")
+plt.title("Linear Separability")
+plt.legend()
+plt.grid()
+plt.show()
+
+# Check classification
+print("Classification Results:")
+
+correct = 0
+total = len(class0) + len(class1)
+
+for point in class0:
+    value = point[0] + point[1]
+    prediction = 0 if value < 7 else 1
+    print(point, "->", prediction)
+
+    if prediction == 0:
+        correct += 1
+
+for point in class1:
+    value = point[0] + point[1]
+    prediction = 0 if value < 7 else 1
+    print(point, "->", prediction)
+
+    if prediction == 1:
+        correct += 1
+
+print("\nCorrectly Classified:", correct, "/", total)
+print("Accuracy:", correct / total)
+
+
+Question 2. Implement a single-layer perceptron from scratch. Initialize weights and bias, calculate the weighted sum, apply the step activation function, update weights for incorrect predictions, train until convergence or the maximum number of epochs, and plot the final decision boundary.
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+X = np.array([
+    [1, 1],
+    [1, 2],
+    [2, 1],
+    [4, 4],
+    [5, 4],
+    [4, 5]
+])
+
+# Target values
+y = np.array([0, 0, 0, 1, 1, 1])
+
+# Initialize weights and bias
+weights = np.zeros(2)
+bias = 0
+
+learning_rate = 0.1
+epochs = 100
+
+# Step activation function
+def step_function(z):
+    return 1 if z >= 0 else 0
+
+# Training
+for epoch in range(epochs):
+    errors = 0
+
+    for xi, target in zip(X, y):
+
+        # Weighted sum
+        z = np.dot(xi, weights) + bias
+
+        # Prediction
+        prediction = step_function(z)
+
+        # Error
+        error = target - prediction
+
+        # Update weights and bias
+        weights += learning_rate * error * xi
+        bias += learning_rate * error
+
+        if error != 0:
+            errors += 1
+
+    print("Epoch:", epoch + 1, "Errors:", errors)
+
+    if errors == 0:
+        print("Perceptron converged.")
+        break
+
+print("\nFinal weights:", weights)
+print("Final bias:", bias)
+
+# Plot data
+plt.scatter(
+    X[y == 0, 0],
+    X[y == 0, 1],
+    label="Class 0"
+)
+
+plt.scatter(
+    X[y == 1, 0],
+    X[y == 1, 1],
+    label="Class 1"
+)
+
+# Decision boundary
+x_values = np.linspace(0, 6, 100)
+
+if abs(weights[1]) > 1e-10:
+    y_values = -(weights[0] * x_values + bias) / weights[1]
+
+    plt.plot(
+        x_values,
+        y_values,
+        label="Decision Boundary"
+    )
+
+plt.xlabel("X1")
+plt.ylabel("X2")
+plt.title("Single-Layer Perceptron")
+plt.legend()
+plt.grid()
+plt.show()
+
+
+Question 3. Plot the XOR data, attempt to separate the classes using a straight line, explain why a single linear decision boundary cannot correctly classify all four points, and demonstrate the classification behavior of a single perceptron.
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+# XOR data
+X = np.array([
+    [0, 0],
+    [0, 1],
+    [1, 0],
+    [1, 1]
+])
+
+y = np.array([0, 1, 1, 0])
+
+# Plot XOR data
+plt.scatter(
+    X[y == 0, 0],
+    X[y == 0, 1],
+    s=100,
+    label="Class 0"
+)
+
+plt.scatter(
+    X[y == 1, 0],
+    X[y == 1, 1],
+    s=100,
+    label="Class 1"
+)
+
+# Sample linear boundary
+x = np.linspace(-0.2, 1.2, 100)
+y_boundary = x
+
+plt.plot(
+    x,
+    y_boundary,
+    label="Sample Linear Boundary"
+)
+
+plt.xlabel("Feature X1")
+plt.ylabel("Feature X2")
+plt.title("XOR - Single Perceptron")
+plt.legend()
+plt.grid()
+plt.show()
+
+print("XOR cannot be separated using a single straight line.")
+print("A single perceptron can classify only linearly separable data.")
+
+
+Question 4. Consider a three-dimensional binary classification problem. Find a suitable hyperplane and visualize the data using a 3D scatter plot. Verify the classification results.
+
+import numpy as np
+import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D
+
+# Class 0
+class0 = np.array([
+    [1, 1, 1],
+    [1, 2, 1],
+    [2, 1, 1]
+])
+
+# Class 1
+class1 = np.array([
+    [5, 5, 5],
+    [5, 6, 5],
+    [6, 5, 6]
+])
+
+# Hyperplane: x1 + x2 + x3 - 9 = 0
+w1 = 1
+w2 = 1
+w3 = 1
+b = -9
+
+# Create 3D plot
+fig = plt.figure()
+ax = fig.add_subplot(111, projection='3d')
+
+# Plot Class 0
+ax.scatter(
+    class0[:, 0],
+    class0[:, 1],
+    class0[:, 2],
+    s=80,
+    label="Class 0"
+)
+
+# Plot Class 1
+ax.scatter(
+    class1[:, 0],
+    class1[:, 1],
+    class1[:, 2],
+    s=80,
+    label="Class 1"
+)
+
+# Create hyperplane
+x1 = np.linspace(0, 7, 20)
+x2 = np.linspace(0, 7, 20)
+
+X1, X2 = np.meshgrid(x1, x2)
+
+X3 = -(w1 * X1 + w2 * X2 + b) / w3
+
+ax.plot_surface(
+    X1,
+    X2,
+    X3,
+    alpha=0.4
+)
+
+ax.set_xlabel("X1")
+ax.set_ylabel("X2")
+ax.set_zlabel("X3")
+ax.set_title("3D Linear Classification")
+ax.legend()
+
+plt.show()
+
+# Verify classification
+print("Classification Results:")
+
+print("\nClass 0:")
+for point in class0:
+    value = (
+        w1 * point[0]
+        + w2 * point[1]
+        + w3 * point[2]
+        + b
+    )
+
+    prediction = 0 if value < 0 else 1
+    print(point, "->", prediction)
+
+print("\nClass 1:")
+for point in class1:
+    value = (
+        w1 * point[0]
+        + w2 * point[1]
+        + w3 * point[2]
+        + b
+    )
+
+    prediction = 0 if value < 0 else 1
+    print(point, "->", prediction)
+
+
+Question 5. Create a linearly separable dataset and a non-linearly separable circular dataset. Plot both datasets, train a linear classifier using Logistic Regression, calculate classification accuracy, and compare the results.
+
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LogisticRegression
+from sklearn.datasets import make_circles
+from sklearn.metrics import accuracy_score
+
+# Dataset A: Linearly Separable
+np.random.seed(42)
+
+class0 = np.random.randn(50, 2) + [2, 2]
+class1 = np.random.randn(50, 2) + [7, 7]
+
+X_linear = np.vstack((class0, class1))
+y_linear = np.array([0] * 50 + [1] * 50)
+
+# Train Logistic Regression
+model_linear = LogisticRegression()
+model_linear.fit(X_linear, y_linear)
+
+# Prediction
+prediction_linear = model_linear.predict(X_linear)
+
+# Accuracy
+accuracy_linear = accuracy_score(
+    y_linear,
+    prediction_linear
+)
+
+print("Dataset A - Linear Accuracy:", accuracy_linear)
+
+# Plot Dataset A
+plt.scatter(
+    X_linear[y_linear == 0, 0],
+    X_linear[y_linear == 0, 1],
+    label="Class 0"
+)
+
+plt.scatter(
+    X_linear[y_linear == 1, 0],
+    X_linear[y_linear == 1, 1],
+    label="Class 1"
+)
+
+plt.title("Dataset A - Linearly Separable")
+plt.xlabel("Feature X1")
+plt.ylabel("Feature X2")
+plt.legend()
+plt.grid()
+plt.show()
+
+# Dataset B: Circular Dataset
+X_circle, y_circle = make_circles(
+    n_samples=200,
+    noise=0.08,
+    factor=0.5,
+    random_state=42
+)
+
+# Train Logistic Regression
+model_circle = LogisticRegression()
+model_circle.fit(X_circle, y_circle)
+
+# Prediction
+prediction_circle = model_circle.predict(X_circle)
+
+# Accuracy
+accuracy_circle = accuracy_score(
+    y_circle,
+    prediction_circle
+)
+
+print("Dataset B - Circular Accuracy:", accuracy_circle)
+
+# Plot Dataset B
+plt.scatter(
+    X_circle[y_circle == 0, 0],
+    X_circle[y_circle == 0, 1],
+    label="Class 0"
+)
+
+plt.scatter(
+    X_circle[y_circle == 1, 0],
+    X_circle[y_circle == 1, 1],
+    label="Class 1"
+)
+
+plt.title("Dataset B - Non-Linearly Separable")
+plt.xlabel("Feature X1")
+plt.ylabel("Feature X2")
+plt.legend()
+plt.grid()
+plt.show()
+
+print("\nComparison:")
+print("Dataset A Accuracy:", accuracy_linear)
+print("Dataset B Accuracy:", accuracy_circle)
+
+print("\nConclusion:")
+print("Logistic Regression performs well on the linearly")
+print("separable dataset but performs poorly on the circular")
+print("dataset because it uses a linear decision boundary.")
+
+
+Question 6. Consider the XOR dataset. Demonstrate how a non-linear feature transformation can make the XOR problem linearly separable by transforming (x1, x2) into (x1, x2, x1*x2). Train a classifier using the transformed features and compare its performance with a linear classifier operating on the original features.
+
+import numpy as np
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+# XOR data
+X = np.array([
+    [0, 0],
+    [0, 1],
+    [1, 0],
+    [1, 1]
+])
+
+y = np.array([0, 1, 1, 0])
+
+# Linear classifier on original data
+model1 = LogisticRegression()
+model1.fit(X, y)
+
+prediction1 = model1.predict(X)
+
+accuracy1 = accuracy_score(
+    y,
+    prediction1
+)
+
+print("Original Feature Predictions:", prediction1)
+print("Original Feature Accuracy:", accuracy1)
+
+# Non-linear feature transformation
+X_transformed = np.column_stack([
+    X[:, 0],
+    X[:, 1],
+    X[:, 0] * X[:, 1]
+])
+
+print("\nTransformed Features:")
+print(X_transformed)
+
+# Train classifier
+model2 = LogisticRegression(C=10)
+model2.fit(X_transformed, y)
+
+prediction2 = model2.predict(X_transformed)
+
+accuracy2 = accuracy_score(
+    y,
+    prediction2
+)
+
+print("\nTransformed Feature Predictions:", prediction2)
+print("Transformed Feature Accuracy:", accuracy2)
+
+# Comparison
+print("\nComparison:")
+print("Original Features Accuracy:", accuracy1)
+print("Transformed Features Accuracy:", accuracy2)
+
+
+==============================
+SCT PRACTICAL 10
+==============================
+
+Topic: Python Membership and Identity Operators
+
+
+Question 1. To study and implement Membership Operators (in and not in) in Python.
+
+students = ["Amit", "Priya", "Rahul", "Sneha"]
+
+search_name = "Rahul"
+
+if search_name in students:
+    print(search_name, "is present in the list")
+
+new_name = "Rohan"
+
+if new_name not in students:
+    print(new_name, "is not present in the list")
+
+email = "student@university.edu"
+
+print("@university.edu" in email)
+
+
+Question 2. Create a dictionary containing student names as keys and their marks as values. Use membership operators to check whether a given student exists in the dictionary and whether a particular mark exists among the dictionary values.
+
+marks = {
+    "Amit": 78,
+    "Priya": 85,
+    "Rahul": 67,
+    "Sneha": 92,
+    "Neha": 74
+}
+
+name = input("Enter student name: ")
+mark = int(input("Enter mark to search: "))
+
+print("Student exists:", name in marks)
+print("Student does not exist:", name not in marks)
+
+print("Mark exists:", mark in marks.values())
+print("Mark does not exist:", mark not in marks.values())
+
+
+Question 3. Create two lists containing the same elements and create a third variable referring to the first list. Use identity operators to determine which variables refer to the same object.
+
+data1 = [10, 20, 30, 40]
+
+data2 = [10, 20, 30, 40]
+
+data3 = data1
+
+print("data1 is data2:", data1 is data2)
+print("data1 is data3:", data1 is data3)
+print("data2 is data3:", data2 is data3)
+
+print("data1 is not data2:", data1 is not data2)
+
+
+Question 4. Write a Python program to validate whether a student's selected programming language belongs to the list of supported languages. Also create another reference to the same list and verify its identity.
+
+languages = ["Python", "Java", "C++", "R", "JavaScript"]
+
+selected_language = input("Enter your programming language: ")
+
+if selected_language in languages:
+    print(selected_language, "is a supported language.")
+else:
+    print(selected_language, "is not a supported language.")
+
+available_languages = languages
+
+print("Both variables refer to the same object:", languages is available_languages)
+
+print("Both variables refer to different objects:", languages is not available_languages)
