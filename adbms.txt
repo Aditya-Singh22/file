@@ -1,0 +1,1217 @@
+ADBMS - All Practicals
+Code-only collection · Practicals 1-11 · Outputs and explanations omitted
+Practical 1
+ERD, Database Design and Implementation - SQL
+c) Convert the ER diagram into relational schema.
+b) Convert the ER diagram into relational tables.
+b) Insert at least three records into each table.
+b) Display the number of students enrolled in each course.
+d) Display all courses having more than one student enrolled.
+CREATE TABLE Department7777(
+DepartmentID INT PRIMARY KEY,
+DepartmentName VARCHAR(50),
+Office VARCHAR(50)
+);
+CREATE TABLE Faculty7777(
+FacultyID INT PRIMARY KEY,
+FacultyName VARCHAR(50),
+Email VARCHAR(50),
+Qualification VARCHAR(50),
+DepartmentID INT,
+FOREIGN KEY (DepartmentID)
+REFERENCES Department7777(DepartmentID)
+CREATE TABLE Course7777(
+CourseID INT PRIMARY KEY,
+CourseName VARCHAR(50),
+Credits INT,
+Description VARCHAR(100),
+FacultyID INT,
+FOREIGN KEY(FacultyID)
+REFERENCES Faculty7777(FacultyID)
+CREATE TABLE Student7777(
+StudentID INT PRIMARY KEY,
+StudentName VARCHAR(50),
+Phone VARCHAR(15),
+DateOfBirth DATE
+CREATE TABLE Enrollment7777(
+StudentID INT,
+CourseID INT,
+EnrollDate DATE,
+PRIMARY KEY(StudentID, CourseID),
+FOREIGN KEY(StudentID)
+REFERENCES Student7777(StudentID),
+FOREIGN KEY(CourseID)
+REFERENCES Course7777(CourseID)
+NSERT INTO Department7777 VALUES (1,'Computer','A101');
+INSERT INTO Department7777 VALUES (2,'IT','B201');
+INSERT INTO Department7777 VALUES (3,'Electronics','C301');
+INSERT INTO Faculty7777 VALUES (101,'Dr Sharma','sharma@gmail.com','PhD',1);
+INSERT INTO Faculty7777 VALUES (102,'Dr Mehta','mehta@gmail.com','MTech',2);
+INSERT INTO Faculty7777 VALUES (103,'Dr Patel','patel@gmail.com','PhD',3);
+INSERT INTO Course7777 VALUES (201,'DBMS',4,'Database Subject',101);
+INSERT INTO Course7777 VALUES (202,'Java',3,'Programming',102);
+INSERT INTO Course7777 VALUES (203,'Networks',4,'Computer Network',103);
+NSERT INTO Student7777 VALUES (1,'Aditya','adi@gmail.com','9876543210',TO_DATE('2005-01-10','YYYY-MM-DD'));
+INSERT INTO Student7777 VALUES (2,'Rahul','rahul@gmail.com','9876543211',TO_DATE('2004-08-15','YYYY-MM-DD'));
+INSERT INTO Student7777 VALUES (3,'Sneha','sneha@gmail.com','9876543212',TO_DATE('2005-03-20','YYYY-MM-DD'));
+INSERT INTO Enrollment7777 VALUES (1,201,TO_DATE('2026-07-20','YYYY-MM-DD'));
+INSERT INTO Enrollment7777 VALUES (2,201,TO_DATE('2026-07-20','YYYY-MM-DD'));
+INSERT INTO Enrollment7777 VALUES (3,202,TO_DATE('2026-07-21','YYYY-MM-DD'));
+SELECT
+s.StudentID,
+s.StudentName,
+c.CourseName
+FROM Student7777 s
+JOIN Enrollment7777 e
+ON s.StudentID=e.StudentID
+JOIN Course7777 c
+ON e.CourseID=c.CourseID
+WHERE c.CourseID=201;
+f.FacultyName,
+c.CourseName,
+c.Credits
+FROM Faculty7777 f
+ON f.FacultyID=c.FacultyID
+WHERE f.FacultyID=101;
+SELECT s.StudentID,
+d.DepartmentName
+ON s.StudentID = e.StudentID
+ON e.CourseID = c.CourseID
+JOIN Faculty7777 f
+ON c.FacultyID = f.FacultyID
+JOIN Department7777 d
+ON f.DepartmentID = d.DepartmentID
+WHERE d.DepartmentName = 'Computer';
+SELECT c.CourseID,
+COUNT(e.StudentID) AS TotalStudents
+FROM Course7777 c
+ON c.CourseID = e.CourseID
+GROUP BY c.CourseID, c.CourseName;
+SELECT f.FacultyName,
+ON f.FacultyID = c.FacultyID;
+GROUP BY c.CourseID, c.CourseName
+HAVING COUNT(e.StudentID) > 1;
+Take Home task-
+ER diagram-
+Table1
+CREATE TABLE Author (
+Author_ID INT PRIMARY KEY,
+Name VARCHAR(100),
+Email VARCHAR(100),
+Affiliation VARCHAR(150)
+);
+Table2
+CREATE TABLE Research_Paper (
+Paper_ID INT PRIMARY KEY,
+Title VARCHAR(200),
+Abstract TEXT,
+Publication_Date DATE,
+Author_ID INT,
+Journal_ID INT,
+FOREIGN KEY (Author_ID) REFERENCES Author(Author_ID),
+FOREIGN KEY (Journal_ID) REFERENCES Journal(Journal_ID)
+
+
+Practical 2
+Parallelism and Data Replication - Oracle SQL
+A healthcare organization operates hospitals in Mumbai, Pune, Nashik, and Nagpur. Each hospital stores
+patient records locally to improve response time. To ensure high availability and fault tolerance, patient
+records are fragmented based on hospital location and replicated to a central backup server. Perform the
+following activities using Oracle SQL.
+CREATE TABLE Patient (
+Patient_ID NUMBER PRIMARY KEY,
+Patient_Name VARCHAR2(50),
+Age NUMBER,
+Gender VARCHAR2(10),
+Disease VARCHAR2(50),
+Doctor_Name VARCHAR2(50),
+Hospital VARCHAR2(20),
+Admission_Date DATE
+);
+INSERT INTO Patient VALUES (101,'Amit Shah',45,'Male','Diabetes','Dr Sharma','Mumbai','2026-07-01');
+INSERT INTO Patient VALUES (102,'Sneha Patil',30,'Female','Fever','Dr Mehta','Mumbai','2026-07-02');
+INSERT INTO Patient VALUES (103,'Rahul Verma',55,'Male','Cancer','Dr Joshi','Mumbai','2026-07-03');
+INSERT INTO Patient VALUES (104,'Priya Singh',28,'Female','Diabetes','Dr Kulkarni','Pune','2026-07-04');
+INSERT INTO Patient VALUES (105,'Rohan Gupta',40,'Male','Asthma','Dr Kulkarni','Pune','2026-07-05');
+INSERT INTO Patient VALUES (106,'Neha Rao',36,'Female','Malaria','Dr Patil','Pune','2026-07-06');
+INSERT INTO Patient VALUES (107,'Karan Desai',50,'Male','Diabetes','Dr Patil','Nashik','2026-07-07');
+INSERT INTO Patient VALUES (108,'Pooja More',32,'Female','Typhoid','Dr Shinde','Nashik','2026-07-08');
+INSERT INTO Patient VALUES (109,'Vikas Jain',48,'Male','Heart Disease','Dr Shinde','Nashik','2026-07-09');
+INSERT INTO Patient VALUES (110,'Anjali Roy',27,'Female','Covid','Dr Naik','Nagpur','2026-07-10');
+INSERT INTO Patient VALUES (111,'Suresh Iyer',60,'Male','Diabetes','Dr Naik','Nagpur','2026-07-11');
+INSERT INTO Patient VALUES (112,'Meena Das',35,'Female','Migraine','Dr Khan','Nagpur','2026-07-12');
+SELECT *
+FROM Patient
+ORDER BY Patient_ID;
+CREATE TABLE Patient_Mumbai AS
+WHERE Hospital='Mumbai';
+CREATE TABLE Patient_Pune AS
+WHERE Hospital='Pune';
+CREATE TABLE Patient_Nashik AS
+WHERE Hospital='Nashik';
+CREATE TABLE Patient_Nagpur AS
+WHERE Hospital='Nagpur';
+SELECT * FROM Patient_Mumbai;
+SELECT * FROM Patient_Pune;
+SELECT * FROM Patient_Nashik;
+SELECT * FROM Patient_Nagpur;
+SELECT Hospital,
+GROUP BY Hospital;
+CREATE TABLE Patient_Replica AS
+FROM Patient;
+INSERT INTO Patient
+VALUES
+(113,'Arjun Nair',42,'Male','Dengue','Dr Sharma','Mumbai','2026-07-15');
+----------------------------------------------------------------
+INSERT INTO Patient_Replica
+WHERE Patient_ID=113;
+UPDATE Patient
+SET Disease='Hypertension'
+WHERE Patient_ID=105;
+UPDATE Patient_Replica
+DELETE FROM Patient
+WHERE Patient_ID=102;
+DELETE FROM Patient_Replica
+SELECT * FROM Patient_Mumbai
+UNION ALL
+SELECT * FROM Patient_Pune
+SELECT * FROM Patient_Nashik
+FROM Patient_Mumbai
+WHERE Disease='Diabetes'
+FROM Patient_Pune
+FROM Patient_Nashik
+FROM Patient_Nagpur
+WHERE Disease='Diabetes';
+SELECT Doctor_Name,
+FROM
+(
+SELECT Doctor_Name FROM Patient_Mumbai
+SELECT Doctor_Name FROM Patient_Pune
+SELECT Doctor_Name FROM Patient_Nashik
+SELECT Doctor_Name FROM Patient_Nagpur
+)
+GROUP BY Doctor_Name;
+EXPLAIN QUERY PLAN
+CREATE INDEX IDX_Disease
+ON Patient(Disease);
+CREATE INDEX IDX_Hospital
+ON Patient(Hospital);
+
+
+Practical 3
+MongoDB
+// Practical 3 - Students
+use VSIT_MScIT
+db.createCollection("Students")
+db.Student.insertMany([
+  { _id: 1, Name: "Aryan", Subject: "AI", Marks: 78, City: "Mumbai" },
+  { _id: 2, Name: "Manav", Subject: "CC", Marks: 85, City: "Pune" },
+  { _id: 3, Name: "Saniya", Subject: "CC", Marks: 90, City: "Mumbai" },
+  { _id: 4, Name: "Noor", Subject: "AI", Marks: 90, City: "Mumbai" },
+  { _id: 5, Name: "Shama", Subject: "SCT", Marks: 88, City: "Pune" }
+])
+db.Student.find().pretty()
+db.Student.find({ _id: 3 })
+db.Student.find({ Subject: "AI" })
+db.Student.find({ City: "Mumbai" })
+db.Student.find({ Marks: { $gt: 75 } })
+db.Student.updateOne({ _id: 3 }, { $set: { Marks: 72 } })
+db.Student.find({ _id: 3 })
+db.Student.updateOne({ _id: 2 }, { $set: { City: "Mumbai" } })
+db.Student.find()
+db.Student.deleteOne({ _id: 5 })
+db.Student.find()
+db.Student.find().sort({ Marks: -1 })
+db.Student.count()
+
+// Practice Questions - Books
+use VSIT_Library
+db.createCollection("Books")
+db.Books.insertMany([
+  { _id: 1, BookName: "Artificial Intelligence", Author: "Stuart Russell", Subject: "AI", Price: 650, Availability: "Yes" },
+  { _id: 2, BookName: "Database Management Systems", Author: "Raghu Ramakrishnan", Subject: "DBMS", Price: 850, Availability: "Yes" },
+  { _id: 3, BookName: "Machine Learning", Author: "Tom Mitchell", Subject: "AI", Price: 750, Availability: "No" },
+  { _id: 4, BookName: "Computer Networks", Author: "Andrew Tanenbaum", Subject: "CN", Price: 900, Availability: "Yes" },
+  { _id: 5, BookName: "Software Engineering", Author: "Ian Sommerville", Subject: "SE", Price: 600, Availability: "Yes" }
+])
+db.Books.find()
+db.Books.find({ _id: 3 })
+db.Books.find({ Subject: "AI" })
+db.Books.find({ Availability: "Yes" })
+db.Books.find({ Price: { $gt: 700 } })
+db.Books.updateOne({ _id: 1 }, { $set: { Price: 700 } })
+db.Books.find({ _id: 1 })
+db.Books.updateOne({ _id: 3 }, { $set: { Availability: "Yes" } })
+db.Books.find()
+db.Books.deleteOne({ _id: 5 })
+db.Books.find()
+db.Books.find().sort({ Price: -1 })
+db.Books.countDocuments({})
+
+
+Practical 4
+ORDBMS - Object Types and Inheritance
+Create Address Object Type
+Create Employee Table with Composite Attribute
+Insert 5 Records into Employee Table
+Create Parent Object Type
+Create Parent Object Table
+Insert Records into Parent Table
+Query Parent Table
+Create Child Type Using Inheritance: Create EmployeeType as Child of PersonType
+Create Child Object Table
+Insert Records into Child Table
+Query Child Table
+Describe Child Table Structure
+CREATE TYPE Address AS OBJECT (
+Street VARCHAR2(50),
+City VARCHAR2(30),
+Pincode VARCHAR2(10)
+);
+CREATE TABLE Employee (
+EmpID NUMBER PRIMARY KEY,
+EmpName VARCHAR2(50),
+EmpAddress Address
+INSERT INTO Employee VALUES
+(101, 'Rahul', Address('MG Road', 'Mumbai', '421201'));
+(102, 'Priya', Address('Brigade Road', 'Bengaluru', '560001'));
+(103, 'Amit', Address('Anna Salai', 'Chennai', '600002'));
+(104, 'Sneha', Address('Banjara Hills', 'Hyderabad', '500034'));
+(105, 'Vikram', Address('Park Street', 'Kolkata', '700016'));
+(106, 'Neha', Address('FC Road', 'Pune', '411004'));
+SELECT
+e.EmpID,
+e.EmpName,
+e.EmpAddress.Street AS Street,
+e.EmpAddress.City AS City,
+e.EmpAddress.Pincode AS Pincode
+FROM Employee e;
+e.EmpAddress.City AS City
+e.EmpAddress.Street AS Street
+CREATE TYPE PersonType AS OBJECT (
+PersonID NUMBER,
+PersonName VARCHAR2(50)
+) NOT FINAL;
+CREATE TABLE Person OF PersonType (
+PRIMARY KEY (PersonID)
+INSERT INTO Person
+VALUES (PersonType(1, 'Rahul'));
+VALUES (PersonType(2, 'Priya'));
+VALUES (PersonType(3, 'Amit'));
+SELECT * FROM Person;
+CREATE TYPE EmployeeType UNDER PersonType (
+Salary NUMBER
+CREATE TABLE EmployeeChild OF EmployeeType (
+INSERT INTO EmployeeChild
+VALUES (EmployeeType(101, 'Rahul', 50000));
+VALUES (EmployeeType(102, 'Priya', 60000));
+SELECT * FROM EmployeeChild;
+DESC EmployeeChild;
+CREATE TYPE Contact AS OBJECT (
+Phone VARCHAR2(15),
+Email VARCHAR2(50)
+CREATE TABLE Student_1 (
+StudentID NUMBER PRIMARY KEY,
+StudentName VARCHAR2(50),
+StudentContact Contact
+INSERT INTO Student_1
+VALUES (1, 'Aditya', Contact('9876543210', 'aditya@gmail.com'));
+s.StudentContact.Email AS Email
+FROM Student_1 s;
+CREATE TYPE StudentType AS OBJECT (
+StudentID NUMBER,
+CREATE TYPE ResearchScholarType UNDER StudentType (
+ResearchArea VARCHAR2(100)
+CREATE TABLE ResearchScholar OF ResearchScholarType (
+PRIMARY KEY (StudentID)
+
+
+Practical 5
+Datalog / Prolog
+2. Students from IT Department
+10 . JOIN: Student Name + Course Name + Faculty Name
+Practice Questions:
+Find students who are taking courses taught by faculty from their own department
+% UNIVERSITY MANAGEMENT SYSTEM
+% ---------- DEPARTMENTS ----------
+department(d01, computer_science).
+department(d02, information_technology).
+department(d03, data_science).
+department(d04, electronics).
+% ---------- STUDENTS ----------
+student(s01, rohit, d02).
+student(s02, amit, d01).
+student(s03, sneha, d03).
+student(s04, rahul, d02).
+student(s05, priya, d01).
+student(s06, neha, d03).
+% ---------- COURSES ----------
+course(c01, database_systems, d02).
+course(c02, data_structures, d01).
+course(c03, machine_learning, d03).
+course(c04, web_technology, d02).
+course(c05, artificial_intelligence, d01).
+course(c06, python_programming, d03).
+course(c07, advanced_database, d02).
+faculty(f01, anita, 002).
+faculty(f02, rajesh, 001).
+faculty(f03, sunita, 003).
+faculty(f04, vikram, 002).
+enrolled(s01, c01).
+enrolled(s01, c04).
+enrolled(s02, c02).
+enrolled(s02, c05).
+enrolled(s03, c03).
+enrolled(s03, c06).
+enrolled(s04, c01).
+enrolled(s04, c07).
+enrolled(s05, c02).
+enrolled(s05, c05).
+enrolled(s06, c03).
+enrolled(s06, c06).
+teaches(f01,co1).
+teaches(f01,co4).
+teaches(f02,co2).
+teaches(f02,co5).
+teaches(f03,co3).
+prerequisite(c02, c01).
+prerequisite(c01, c07).
+prerequisite(c02, c05).
+prerequisite(c06, c03).
+prerequisite(c03, c05).
+% Student belongs to a department
+belongs_to_department(Student, Department) :-
+student(Student, _, Department).
+% Student takes a course
+takes_course(Student, Course) :-
+enrolled(Student, Course).
+% Find student's course by name
+student_course(StudentName, CourseName) :-
+student(SID, StudentName, _),
+enrolled(SID, CID),
+course(CID, CourseName, _).
+% Find faculty teaching a course
+faculty_course(FacultyName, CourseName) :-
+faculty(FID, FacultyName, _),
+teaches(FID, CID),
+% Student-faculty relationship
+student_faculty(StudentName, FacultyName) :-
+faculty(FID, FacultyName, _).
+% Direct or indirect prerequisite
+requires(Course1, Course2) :-
+prerequisite(Course1, Course2).
+prerequisite(Course1, Course3),
+student(ID, Name, Department).
+student(SID,rohini,_),
+enrolled(SID,CID).
+student(SID, rohini, _),
+teaches(FID,co1),
+faculty(FID,Name,_).
+teaches(FID, c01),
+faculty(FID, Name, _).
+faculty(FID, anita, _), teaches(FID, CID), course(CID, CourseName, _).
+student(SID, rohit, _),
+course(CID, CourseName, _),
+
+
+Practical 6
+Data Warehouse and OLAP - Oracle SQL
+Practical on data warehouse, OLAP
+Define appropriate foreign key relationships with all dimension tables.
+Number of Days
+Patient_id INT PRIMARY KEY,
+Patient_name VARCHAR2(20),
+Patient_gender VARCHAR2(20),
+Patient_city VARCHAR2(20),
+Patient_age INT,
+Patient_contact INT
+);
+CREATE TABLE Doctor_dim(
+Doctor_id INT PRIMARY KEY,
+Doctor_name VARCHAR2(20),
+Specialization VARCHAR2(20),
+Experience INT,
+Branch VARCHAR2(20)
+CREATE TABLE Department_dim(
+Department_id INT PRIMARY KEY,
+Department_name VARCHAR2(20),
+Department_type VARCHAR2(20),
+)
+CREATE TABLE Time_dim(
+Time_id INT PRIMARY KEY,
+Admission_date DATE,
+Day INT,
+Month VARCHAR2(20),
+Quater VARCHAR2(20),
+Year INT
+CREATE TABLE Treatment_Fact(
+Treatment_id INT PRIMARY KEY,
+Patient_id INT,
+Doctor_id INT,
+Department_id INT,
+Time_id INT,
+Treatment_Cost INT,
+Number_of_Days INT,
+FOREIGN KEY(Patient_id)
+REFERENCES Patient_dim(Patient_id),
+FOREIGN KEY(Doctor_id)
+REFERENCES Doctor_dim(Doctor_id),
+FOREIGN KEY(Department_id)
+REFERENCES Department_dim(Department_id),
+FOREIGN KEY(Time_id)
+REFERENCES Time_dim(Time_id)
+INSERT ALL
+INTO Patient_dim VALUES (1, 'Aarav Sharma', 'Male', 'Mumbai', 35, 9876543210)
+INTO Patient_dim VALUES (2, 'Priya Patil', 'Female', 'Pune', 42, 9876543211)
+INTO Patient_dim VALUES (3, 'Rohan Joshi', 'Male', 'Nashik', 28, 9876543212)
+INTO Patient_dim VALUES (4, 'Sneha Deshmukh', 'Female', 'Nagpur', 31, 9876543213)
+INTO Patient_dim VALUES (5, 'Vikram Singh', 'Male', 'Mumbai', 55, 9876543214)
+INTO Patient_dim VALUES (6, 'Ananya Kulkarni', 'Female', 'Pune', 24, 9876543215)
+INTO Patient_dim VALUES (7, 'Rahul Mehta', 'Male', 'Nashik', 47, 9876543216)
+INTO Patient_dim VALUES (8, 'Neha Shah', 'Female', 'Nagpur', 38, 9876543217)
+INTO Patient_dim VALUES (9, 'Amit Pawar', 'Male', 'Mumbai', 62, 9876543218)
+INTO Patient_dim VALUES (10, 'Kavya More', 'Female', 'Pune', 29, 9876543219)
+SELECT * FROM dual;
+INTO Doctor_dim VALUES (101, 'Dr. Raj Malhotra', 'Cardiology', 15, 'Mumbai')
+INTO Doctor_dim VALUES (102, 'Dr. Meera Joshi', 'Neurology', 12, 'Pune')
+INTO Doctor_dim VALUES (103, 'Dr. Amit Shah', 'Orthopedic', 10, 'Nashik')
+INTO Doctor_dim VALUES (104, 'Dr. Pooja Patil', 'Pediatrics', 8, 'Nagpur')
+INTO Doctor_dim VALUES (105, 'Dr. Suresh Rao', 'Cardiology', 20, 'Mumbai')
+INTO Doctor_dim VALUES (106, 'Dr. Neha Kulkarni', 'Dermatology', 7, 'Pune')
+INTO Doctor_dim VALUES (107, 'Dr. Rohit Deshmukh', 'Neurology', 14, 'Nashik')
+INTO Doctor_dim VALUES (108, 'Dr. Snehal More', 'Gynecology', 11, 'Nagpur')
+INTO Doctor_dim VALUES (109, 'Dr. Karan Mehta', 'Orthopedic', 9, 'Mumbai')
+INTO Doctor_dim VALUES (110, 'Dr. Riya Shah', 'General Medicine', 6, 'Pune')
+INTO Department_dim VALUES (201, 'Cardiology', 'Medical', 'Mumbai')
+INTO Department_dim VALUES (202, 'Neurology', 'Medical', 'Pune')
+INTO Department_dim VALUES (203, 'Orthopedic', 'Surgical', 'Nashik')
+INTO Department_dim VALUES (204, 'Pediatrics', 'Medical', 'Nagpur')
+INTO Department_dim VALUES (205, 'Dermatology', 'Medical', 'Mumbai')
+INTO Department_dim VALUES (206, 'Gynecology', 'Medical', 'Pune')
+INTO Department_dim VALUES (207, 'General Medicine', 'Medical', 'Nashik')
+INTO Department_dim VALUES (208, 'ENT', 'Surgical', 'Nagpur')
+INTO Department_dim VALUES (209, 'Oncology', 'Medical', 'Mumbai')
+INTO Department_dim VALUES (210, 'Emergency', 'Critical Care', 'Pune')
+INTO Time_dim VALUES (301, TO_DATE('05-01-2026','DD-MM-YYYY'), 5, 'January', 'Q1', 2026)
+INTO Time_dim VALUES (302, TO_DATE('15-01-2026','DD-MM-YYYY'), 15, 'January', 'Q1', 2026)
+INTO Time_dim VALUES (303, TO_DATE('10-02-2026','DD-MM-YYYY'), 10, 'February', 'Q1', 2026)
+INTO Time_dim VALUES (304, TO_DATE('22-02-2026','DD-MM-YYYY'), 22, 'February', 'Q1', 2026)
+INTO Time_dim VALUES (305, TO_DATE('12-03-2026','DD-MM-YYYY'), 12, 'March', 'Q1', 2026)
+INTO Time_dim VALUES (306, TO_DATE('20-04-2026','DD-MM-YYYY'), 20, 'April', 'Q2', 2026)
+INTO Time_dim VALUES (307, TO_DATE('08-05-2026','DD-MM-YYYY'), 8, 'May', 'Q2', 2026)
+INTO Time_dim VALUES (308, TO_DATE('18-06-2026','DD-MM-YYYY'), 18, 'June', 'Q2', 2026)
+INTO Time_dim VALUES (309, TO_DATE('25-07-2026','DD-MM-YYYY'), 25, 'July', 'Q3', 2026)
+INTO Time_dim VALUES (310, TO_DATE('05-08-2026','DD-MM-YYYY'), 5, 'August', 'Q3', 2026)
+INTO Treatment_Fact VALUES (1001, 1, 101, 201, 301, 75000, 5)
+INTO Treatment_Fact VALUES (1002, 2, 102, 202, 302, 50000, 4)
+INTO Treatment_Fact VALUES (1003, 3, 103, 203, 303, 35000, 3)
+INTO Treatment_Fact VALUES (1004, 4, 104, 204, 304, 25000, 2)
+INTO Treatment_Fact VALUES (1005, 5, 105, 201, 305, 90000, 7)
+INTO Treatment_Fact VALUES (1006, 6, 106, 205, 306, 18000, 2)
+INTO Treatment_Fact VALUES (1007, 7, 107, 202, 307, 60000, 5)
+INTO Treatment_Fact VALUES (1008, 8, 108, 206, 308, 45000, 4)
+INTO Treatment_Fact VALUES (1009, 9, 109, 203, 309, 55000, 5)
+INTO Treatment_Fact VALUES (1010, 10, 110, 207, 310, 22000, 2)
+INTO Treatment_Fact VALUES (1011, 1, 105, 201, 302, 85000, 6)
+INTO Treatment_Fact VALUES (1012, 2, 102, 202, 303, 48000, 3)
+INTO Treatment_Fact VALUES (1013, 3, 109, 203, 304, 40000, 4)
+INTO Treatment_Fact VALUES (1014, 4, 104, 204, 305, 30000, 3)
+INTO Treatment_Fact VALUES (1015, 5, 101, 201, 306, 95000, 8)
+INTO Treatment_Fact VALUES (1016, 6, 106, 205, 307, 20000, 2)
+INTO Treatment_Fact VALUES (1017, 7, 107, 202, 308, 65000, 6)
+INTO Treatment_Fact VALUES (1018, 8, 108, 206, 309, 50000, 5)
+INTO Treatment_Fact VALUES (1019, 9, 103, 203, 310, 60000, 6)
+INTO Treatment_Fact VALUES (1020, 10, 110, 207, 301, 28000, 3)
+SELECT * FROM Patient_dim;
+SELECT * FROM Doctor_dim;
+SELECT * FROM Department_dim;
+SELECT * FROM Time_dim;
+SELECT * FROM Treatment_Fact;
+SELECT
+p.Patient_name,
+d.Doctor_name,
+dt.Department_name,
+t.month,
+tr.treatment_cost,
+tr.number_of_days
+FROM Treatment_Fact tr
+JOIN Patient_dim p
+ON tr.Patient_id = p.patient_id
+JOIN Doctor_dim d
+ON tr.doctor_id = d.doctor_id
+JOIN Department_dim dt
+ON tr.department_id = dt.department_id
+JOIN time_dim t
+ON tr.time_id = t.time_id
+Select
+dt.department_name,
+SUM(tr.treatment_cost) as Total_Treatment_Cost
+from Treatment_Fact tr
+ON tr.Department_id = dt.Department_id
+GROUP BY dt.department_name
+d.doctor_name,
+COUNT(tr.patient_id) as no_of_patient_treated
+from Treatment_fact tr
+GROUP BY d.doctor_name
+select
+sum(tr.treatment_cost)
+JOIN Time_dim t
+GROUP BY t.month
+SUM(tr.treatment_cost)
+FROM Treatment_fact tr
+GROUP BY ROLLUP (dt.department_name, d.doctor_name)
+GROUP BY CUBE(dt.department_name, t.month)
+GROUP BY GROUPING SETS((dt.department_name), (t.month) ,(d.doctor_name))
+t.Year,
+SUM(tr.Treatment_Cost) AS Total_Yearly_Expenditure
+JOIN Time_Dim t
+ON tr.Time_ID = t.Time_ID
+GROUP BY t.Year;
+SELECT *
+FROM (
+SUM(tr.Treatment_Cost) AS Total_Treatment_Cost
+GROUP BY dt.Department_name
+ORDER BY SUM(tr.Treatment_Cost) DESC
+WHERE ROWNUM <= 3;
+dt.Department_Name,
+AVG(tr.Treatment_Cost) AS Average_Treatment_Cost
+JOIN Department_Dim dt
+ON tr.Department_ID = dt.Department_ID
+GROUP BY dt.Department_Name;
+SUM(tr.Treatment_Cost) AS Total_Revenue
+ON tr.Doctor_id = d.Doctor_id
+GROUP BY d.Doctor_name
+WHERE ROWNUM = 1;
+
+
+Practical 7
+XML Database, XPath and XQuery
+let $products :=
+<products>
+<product id="P101">
+<name>Laptop</name>
+<category>Electronics</category>
+<brand>HP</brand>
+<price>55000</price>
+<stock>20</stock>
+<rating>4.5</rating>
+</product>
+<product id="P102">
+<name>Phone</name>
+<brand>Samsung</brand>
+<price>25000</price>
+<stock>35</stock>
+<rating>4.2</rating>
+<product id="P103">
+<name>Headphones</name>
+<brand>Sony</brand>
+<price>3000</price>
+<stock>15</stock>
+<rating>3.8</rating>
+<product id="P104">
+<name>Smart Watch</name>
+<category>Wearables</category>
+<brand>Noise</brand>
+<price>5000</price>
+<stock>16</stock>
+<rating>4.1</rating>
+</products>
+return $products
+Q.3
+return $products/product/name
+Q.4
+return $products/product/@id
+Q.5
+for $product in $products/product where $product/@id = "P102" return $product
+Q.6
+return $products/product[category="Electronics"]
+Q.7
+return $products/product[price>10000]/name
+Q.8
+return
+for $p in $products/product
+return $products/product[brand="Sony"]
+Q.10
+return $products/product[rating > 4.4]
+Q.11
+order by $p/price ascending
+return $p
+Q.12
+order by $p/rating descending
+Q.13
+return count($products/product)
+Q.14
+return avg($products/product/price)
+Q.15
+where $p/stock < 20
+order by $p/price descending
+for $product in $products/product where $product/@id = "P102" return <product-report> <product-id>{data(
+$product/@id)}</product-id> <name>{data($product/name)}</name> <category>{data($product/category)}</category>
+<brand>{data($product/brand)}</brand> <price>{data($product/price)}</price> <stock>{data($product/stock)}</
+stock> <rating>{data($product/rating)}</rating> </product-report>
+<product id="P105">
+<name>Tablet</name>
+<brand>Apple</brand>
+<price>45000</price>
+<stock>25</stock>
+<rating>4.6</rating>
+Q.2
+return $products/product/brand
+return $products/product[price < 10000]
+return $products/product[category="Furniture"]
+return $products/product[rating > 4.0]
+return count($products/product[category="Electronics"])
+return max($products/product/price)
+return min($products/product/price)
+order by $p/stock ascending
+where $p/stock > 20
+<product>
+
+
+Practical 8
+Spatial Data - Oracle Spatial
+Practical on Spatial data
+Update the coordinates of the Canteen and display the updated coordinates.
+CREATE TABLE CAMPUS_SPATIAL (
+ID NUMBER PRIMARY KEY,
+FACILITY_TYPE VARCHAR2(30),
+LOCATION MDSYS.SDO_GEOMETRY
+);
+INSERT INTO CAMPUS_SPATIAL VALUES (
+1,
+'Main Gate',
+'Gate',
+MDSYS.SDO_GEOMETRY(
+2001,
+4326,
+MDSYS.SDO_POINT_TYPE(77.8697, 19.0210, NULL),
+NULL,
+NULL
+)
+2,
+'Library',
+MDSYS.SDO_POINT_TYPE(77.8705, 19.0218, NULL),
+3,
+'Administrative Block',
+'Building',
+MDSYS.SDO_POINT_TYPE(77.8689, 19.0225, NULL),
+4,
+'Cafeteria',
+'Food Court',
+MDSYS.SDO_POINT_TYPE(77.8712, 19.0205, NULL),
+SELECT ID,NAME,FACILITY_TYPE FROM CAMPUS_SPATIAL;
+SELECT
+ID,
+FROM CAMPUS_SPATIAL;
+FACILITY_TYPE
+FROM CAMPUS_SPATIAL
+WHERE FACILITY_TYPE = 'Library';
+a.NAME AS FACILITY_1,
+b.NAME AS FACILITY_2,
+ROUND(
+SDO_GEOM.SDO_DISTANCE(
+a.LOCATION,
+b.LOCATION,
+0.0001,
+'unit=M'
+),
+2
+) AS DISTANCE_METERS
+FROM CAMPUS_SPATIAL a
+CROSS JOIN CAMPUS_SPATIAL b
+WHERE a.ID = 1
+AND b.ID = 2;
+a.NAME,
+WHERE b.ID = 1
+AND a.ID <> 1
+AND SDO_GEOM.SDO_DISTANCE(
+) <= 150;
+DISTANCE_METERS
+FROM (
+ORDER BY DISTANCE_METERS
+WHERE ROWNUM = 1;
+CASE
+WHEN SDO_GEOM.RELATE(
+'EQUAL',
+0.0001
+) = 'EQUAL'
+THEN 'Same Location'
+ELSE 'Different Location'
+END AS LOCATION_STATUS
+WHERE a.ID = 2
+AND b.ID = 3;
+UPDATE CAMPUS_SPATIAL
+SET LOCATION = MDSYS.SDO_GEOMETRY(
+MDSYS.SDO_POINT_TYPE(
+77.8710,
+19.0220,
+WHERE ID = 2;
+FACILITY_TYPE,
+GROUP BY FACILITY_TYPE
+ORDER BY FACILITY_TYPE;
+SELECT NAME, FACILITY_TYPE
+c.ID,
+c.NAME,
+c.FACILITY_TYPE,
+v.X AS LONGITUDE,
+v.Y AS LATITUDE
+FROM CAMPUS_SPATIAL c,
+WHERE c.NAME = 'Library';
+WHERE c.NAME = 'Main Gate';
+WHERE FACILITY_TYPE = 'Laboratory';
+SET FACILITY_TYPE = 'Food Court'
+WHERE NAME = 'Cafeteria';
+TABLE(SDO_UTIL.GETVERTICES(c.LOCATION)) v;
+SELECT a.NAME AS FACILITY_1, b.NAME AS FACILITY_2, ROUND( SDO_GEOM.SDO_DISTANCE( a.LOCATION, b.LOCATION, 0.
+0001, 'unit=M' ), 2 ) AS DISTANCE_METERS FROM CAMPUS_SPATIAL a, CAMPUS_SPATIAL b WHERE a.NAME = 'Main Gate'
+AND b.NAME = 'Library';
+FROM CAMPUS_SPATIAL a,
+CAMPUS_SPATIAL b
+WHERE a.NAME = 'Library'
+AND b.NAME = 'Canteen';
+AND b.NAME = 'Cafeteria';
+77.8715,
+19.0215,
+
+
+Practical 9
+Public-Key Encryption, SHA-256 and Merkle Tree - Python
+Practical on public key encryption and merkle tree
+Multiple result hashes should be organized into a Merkle Tree.
+If any student's marks are modified, the system should detect the modification by comparing the original and
+newly generated Merkle Roots.
+Create at least four examination result records using the following format:
+Use suitable sample data for:
+At least 4 students
+At least 2 different subjects
+Select one examination result and encrypt it using the RSA public key.
+Use the SHA-256 hashes generated in Question 5 as the leaf nodes of a Merkle Tree.
+Use the actual hashes generated by your program.
+if both roots are equal.
+For example:
+if the roots are different.
+for certificate in certificates:
+print(certificate)
+Q.2
+from cryptography.hazmat.primitives.asymmetric import rsa
+private_key = rsa.generate_private_key(
+public_exponent=65537,
+print("Private Key Generate")
+print("Public Key Generate")
+from cryptography.hazmat.primitives.asymmetric import padding
+from cryptography.hazmat.primitives import hashes
+certificate = certificates[0].encode()
+encrypted_data = public_key.encrypt(
+certificate,
+padding.OAEP(
+mgf=padding.MGF1(
+algorithm=hashes.SHA256()
+),
+algorithm=hashes.SHA256(),
+print("Encrypted Successfully")
+Encrypted Successfully
+Q.4
+decrypted_data = private_key.decrypt(
+encrypted_data,
+print("Decrypted Certificate")
+print(decrypted_data.decode())
+Decrypted Cedrtificate
+import hashlib
+def calculate_hash(data):
+return hashlib.sha256(data.encode()).hexdigest()
+print(calculate_hash(certificate))
+3051fcf9f832d5eca58e6431165532ea648eef36a1233489ae9f62d2e8ec425
+96d2d5014fb788255f313ae8f38bffffd71ee25ba78e74e51c52a579a14dc1af
+3b0596ed7f4290ef6c9329643353b0a71e7ff7429995b18da8b1edb0645d85c6
+647f8981e03141a160331b8f98a468b84bf5c99a9429f8ecbfdd8ca5315e885a
+Q.6
+print("Leaf Hashes:")
+for h in hashes_list:
+print(h)
+33051fcf9f832d5eca58e6431165532ea648eef36a1233489ae9f62d2e8ec425
+def merkle_root(hash_list):
+while len(hash_list) > 1:
+for i in range(0, len(hash_list), 2):
+return hash_list[0]
+root = merkle_root(hashes_list.copy())
+print(root)
+4a1c7e7303751fbe675a55e1d804ffaa8ec22a92dffb46985babed1e3a5a0034
+Q.8
+def build_merkle_tree(hash_list):
+return tree
+tree = build_merkle_tree(hashes_list.copy())
+for level_number, level in enumerate(tree):
+print("\nLevel", level_number)
+for h in level:
+Level 0
+for c in certificates
+original_root = merkle_root(original_hashes.copy())
+print("Original Merkle Root:")
+print(original_root)
+print("Modified Certificate:")
+print(modified_certificates[1])
+for c in modified_certificates
+modified_root = merkle_root(modified_hashes.copy())
+print("Modified Merkle Root:")
+print(modified_root)
+8ef232e8f64adc76b69f517cbda563b572daa7be56d289a79d1877d0bf01935f
+Q.12
+print("\nModified Merkle Root:")
+Q.13
+if original_root == modified_root:
+print("Data is authentic.")
+else:
+print("WARNING: Data has been modified!")
+for i in range(len(certificates)):
+original_hash = calculate_hash(
+if original_hash != modified_hash:
+print(
+"Certificate",
+i + 1,
+"has been modified."
+"is unchanged."
+Certificate 1 is unchanged.
+Certificate 2 has been modified.
+Certificate 3 is unchanged.
+Certificate 4 is unchanged.
+
+
+Practical 10
+Database in Cloud - Oracle SQL
+Define a suitable primary key.
+Create an appropriate foreign key relationship with Library_Branch.
+Define a primary key.
+Create suitable foreign key relationships.
+Insert at least:
+3 library branches
+8 books
+8 members
+10 borrowing transactions
+Use data belonging to different cities.
+for all books.
+Borrow date
+Return date
+using appropriate joins.
+Create an index on an appropriate column that can improve the performance of book searches.
+Explain why you selected that column.
+Grant the user only the privileges required to view library book information.
+Update the number of available copies.
+Use COMMIT to permanently save the transaction.
+CREATE TABLE Student (
+student_id NUMBER PRIMARY KEY,
+student_name VARCHAR2(50),
+dept VARCHAR2(30),
+sem NUMBER,
+campus VARCHAR2(30),
+email VARCHAR2(100)
+);
+CREATE TABLE Course (
+course_id NUMBER PRIMARY KEY,
+course_name VARCHAR2(50),
+credits NUMBER
+CREATE TABLE Enrollment (
+enroll_id NUMBER PRIMARY KEY,
+student_id NUMBER,
+course_id NUMBER,
+marks NUMBER,
+FOREIGN KEY (student_id) REFERENCES Student(student_id),
+FOREIGN KEY (course_id) REFERENCES Course(course_id)
+INSERT INTO Student VALUES
+(1, 'Sania', 'Cloud Computing', 5, 'Mumbai', 'sania@gmail.com');
+(2, 'Sultan', 'Cloud Computing', 5, 'Pune', 'sultan@gmail.com');
+(3, 'Achal', 'Data Science', 6, 'Mumbai', 'achal@gmail.com');
+(4, 'Sayali', 'Cyber Security', 5, 'Delhi', 'sayali@gmail.com');
+(5, 'Mubashir', 'Cloud Computing', 6, 'Mumbai', 'mubashir@gmail.com');
+INSERT INTO Course VALUES (101, 'Cloud Computing', 4);
+INSERT INTO Course VALUES (102, 'DBMS', 3);
+INSERT INTO Course VALUES (103, 'Python', 4);
+INSERT INTO Course VALUES (104, 'Cyber Security', 3);
+INSERT INTO Course VALUES (105, 'Data Science', 4);
+INSERT INTO Enrollment VALUES (1, 1, 101, 90);
+INSERT INTO Enrollment VALUES (2, 2, 101, 82);
+INSERT INTO Enrollment VALUES (3, 3, 105, 88);
+INSERT INTO Enrollment VALUES (4, 4, 104, 76);
+INSERT INTO Enrollment VALUES (5, 5, 101, 95);
+SELECT *
+FROM Student
+WHERE dept = 'Cloud Computing';
+WHERE campus = 'Mumbai';
+ORDER BY campus;
+SELECT s.student_id,
+s.student_name,
+c.course_name,
+c.credits,
+e.marks
+FROM Student s
+JOIN Enrollment e
+ON s.student_id = e.student_id
+JOIN Course c
+ON e.course_id = c.course_id;
+CREATE VIEW Student_View AS
+SELECT student_id,
+student_name,
+dept,
+sem,
+campus
+FROM Student;
+FROM Student_View;
+SELECT campus, COUNT(*) AS total_students
+GROUP BY campus;
+SELECT AVG(marks) AS average_marks
+FROM Enrollment;
+WHERE e.marks > 85;
+CREATE INDEX idx_student_campus
+ON Student(campus);
+SELECT COUNT(*) AS total_students
+UPDATE Student
+SET campus = 'Pune'
+WHERE student_id = 1;
+ROLLBACK;
+CREATE TABLE Library_Branch (
+Branch_ID NUMBER PRIMARY KEY,
+Branch_Name VARCHAR2(50),
+City VARCHAR2(30),
+Contact_Number VARCHAR2(15)
+CREATE TABLE Book (
+Book_ID NUMBER PRIMARY KEY,
+Book_Title VARCHAR2(100),
+Author VARCHAR2(100),
+Category VARCHAR2(50),
+Price NUMBER(8,2),
+Available_Copies NUMBER,
+Branch_ID NUMBER,
+CONSTRAINT fk_book_branch
+FOREIGN KEY (Branch_ID)
+REFERENCES Library_Branch(Branch_ID)
+CREATE TABLE Member (
+Member_ID NUMBER PRIMARY KEY,
+Member_Name VARCHAR2(100),
+Department VARCHAR2(50),
+Email VARCHAR2(100),
+Membership_Type VARCHAR2(30)
+CREATE TABLE Staff (
+Staff_ID NUMBER PRIMARY KEY,
+Staff_Name VARCHAR2(100),
+Contact_Number VARCHAR2(15),
+CONSTRAINT fk_staff_branch
+CREATE TABLE Borrowing (
+Borrow_ID NUMBER PRIMARY KEY,
+Member_ID NUMBER,
+Book_ID NUMBER,
+Borrow_Date DATE,
+Return_Date DATE,
+CONSTRAINT fk_borrow_member
+FOREIGN KEY (Member_ID)
+REFERENCES Member(Member_ID),
+CONSTRAINT fk_borrow_book
+FOREIGN KEY (Book_ID)
+REFERENCES Book(Book_ID)
+INSERT INTO Library_Branch
+VALUES (1, 'Mumbai Central Library', 'Mumbai', '9876543210');
+VALUES (2, 'Pune University Library', 'Pune', '9876543211');
+VALUES (3, 'Nashik University Library', 'Nashik', '9876543212');
+INSERT INTO Book VALUES
+(101, 'Database System Concepts', 'Abraham Silberschatz', 'Database', 650, 5, 1);
+(102, 'Oracle Database Guide', 'Thomas Kyte', 'Database', 700, 3, 2);
+(103, 'Computer Networks', 'Andrew Tanenbaum', 'Networking', 550, 4, 1);
+(104, 'Operating System Concepts', 'Abraham Silberschatz', 'Operating System', 600, 2, 3);
+(105, 'Python Programming', 'Mark Lutz', 'Programming', 500, 6, 2);
+(106, 'Java Complete Reference', 'Herbert Schildt', 'Programming', 750, 3, 3);
+(107, 'Cloud Computing', 'Rajkumar Buyya', 'Cloud', 800, 5, 1);
+(108, 'Data Structures', 'Seymour Lipschutz', 'Programming', 450, 4, 2);
+INSERT INTO Member VALUES
+(201, 'Aarav Sharma', 'Computer Science', 'aarav@gmail.com', 'Student');
+(202, 'Priya Patil', 'Information Technology', 'priya@gmail.com', 'Student');
+(203, 'Rahul Mehta', 'Computer Science', 'rahul@gmail.com', 'Student');
+(204, 'Sneha Joshi', 'Commerce', 'sneha@gmail.com', 'Student');
+(205, 'Arjun Shah', 'Information Technology', 'arjun@gmail.com', 'Student');
+(206, 'Neha Kulkarni', 'Computer Science', 'neha@gmail.com', 'Faculty');
+(207, 'Rohan Desai', 'Management', 'rohan@gmail.com', 'Student');
+(208, 'Isha Gupta', 'Information Technology', 'isha@gmail.com', 'Student');
+INSERT INTO Borrowing VALUES
+(301, 201, 101, DATE '2026-08-01', DATE '2026-08-10');
+(302, 202, 102, DATE '2026-08-03', DATE '2026-08-12');
+(303, 203, 101, DATE '2026-08-05', NULL);
+(304, 204, 103, DATE '2026-08-06', DATE '2026-08-15');
+(305, 205, 105, DATE '2026-08-08', NULL);
+(306, 206, 106, DATE '2026-08-10', DATE '2026-08-18');
+(307, 207, 107, DATE '2026-08-12', NULL);
+(308, 208, 101, DATE '2026-08-15', DATE '2026-08-22');
+(309, 201, 108, DATE '2026-08-20', NULL);
+(310, 202, 105, DATE '2026-08-22', DATE '2026-08-29');
+COMMIT;
+SELECT * FROM Book;
+SELECT
+b.Book_Title,
+b.Author,
+b.Category,
+l.Branch_Name,
+l.City
+FROM Book b
+JOIN Library_Branch l
+ON b.Branch_ID = l.Branch_ID;
+b.Available_Copies
+ON b.Branch_ID = l.Branch_ID
+WHERE l.City = 'Pune';
+FROM Book
+WHERE Category = 'Database';
+m.Member_Name,
+br.Borrow_Date,
+br.Return_Date
+FROM Borrowing br
+JOIN Member m
+ON br.Member_ID = m.Member_ID
+JOIN Book b
+ON br.Book_ID = b.Book_ID;
+l.City,
+COUNT(b.Book_ID) AS Total_Books
+FROM Library_Branch l
+LEFT JOIN Book b
+ON l.Branch_ID = b.Branch_ID
+GROUP BY l.Branch_Name, l.City;
+Department,
+FROM Member
+GROUP BY Department;
+b.Book_ID,
+br.Borrow_Date
+ON br.Book_ID = b.Book_ID
+WHERE br.Return_Date IS NULL;
+COUNT(br.Borrow_ID) AS Borrow_Count
+JOIN Borrowing br
+ON b.Book_ID = br.Book_ID
+GROUP BY b.Book_ID, b.Book_Title
+HAVING COUNT(br.Borrow_ID) = (
+SELECT MAX(Borrow_Count)
+FROM (
+SELECT COUNT(*) AS Borrow_Count
+FROM Borrowing
+GROUP BY Book_ID
+)
+CREATE OR REPLACE VIEW Library_Public_View AS
+b.Available_Copies,
+l.Branch_Name
+SELECT * FROM Library_Public_View;
+WHERE Book_Title = 'Python Programming';
+CREATE INDEX idx_book_title
+ON Book(Book_Title);
+INSERT INTO Borrowing
+VALUES (311, 201, 102, SYSDATE, NULL);
+UPDATE Book
+SET Available_Copies = Available_Copies - 1
+WHERE Book_ID = 102;
+WHERE Borrow_ID = 311;
+VALUES (312, 203, 103, SYSDATE, NULL);
+WHERE Book_ID = 103;
+WHERE Borrow_ID = 312;
+
+
+Practical 11
+Database Security - Oracle SQL
+The database administrator must ensure that users can access only the information required for their
+responsibilities. Sensitive information such as student contact details, examination marks, and fee records
+must be protected from unauthorized access.
+Insert at least 5 student records.
+Assign the appropriate privileges required by faculty members and grant the role to Faculty_User.
+Grant access to this view only to Exam_User.
+Grant access to this view only to Accounts_User.
+Update the marks of at least one student and verify the audit information.
+Insert a new student record and verify whether the operation has been recorded.
+Delete one student record and verify the audit information.
+Student_ID NUMBER(5) PRIMARY KEY,
+Student_Name VARCHAR2(50),
+Department VARCHAR2(30),
+Semester NUMBER(2),
+Email VARCHAR2(100),
+Contact_No VARCHAR2(15),
+Marks NUMBER(5,2),
+Fee_Status VARCHAR2(20)
+);
+INSERT INTO Student
+VALUES (101, 'Rahul Sharma', 'IT', 5, 'rahul@gmail.com', '9876543210', 85, 'Paid');
+VALUES (102, 'Priya Patil', 'CS', 5, 'priya@gmail.com', '9876543211', 91, 'Paid');
+VALUES (103, 'Amit Shah', 'IT', 4, 'amit@gmail.com', '9876543212', 76, 'Pending');
+VALUES (104, 'Sneha Joshi', 'AI', 6, 'sneha@gmail.com', '9876543213', 88, 'Paid');
+VALUES (105, 'Neha Singh', 'CS', 4, 'neha@gmail.com', '9876543214', 69, 'Pending');
+COMMIT;
+Q.2
+CREATE USER Faculty_User IDENTIFIED BY faculty123;
+CREATE USER Exam_User IDENTIFIED BY exam123;
+CREATE USER Accounts_User IDENTIFIED BY accounts123;
+GRANT CREATE SESSION TO Faculty_User;
+GRANT CREATE SESSION TO Exam_User;
+GRANT CREATE SESSION TO Accounts_User;
+SELECT USERNAME, ACCOUNT_STATUS
+FROM DBA_USERS
+WHERE USERNAME IN ('FACULTY_USER', 'EXAM_USER', 'ACCOUNTS_USER');
+Q.3
+CREATE ROLE Faculty_Role;
+GRANT SELECT ON Student TO Faculty_Role;
+GRANT Faculty_Role TO Faculty_User;
+SELECT *
+FROM ROLE_TAB_PRIVS
+WHERE ROLE = 'FACULTY_ROLE';
+Q.4
+GRANT SELECT ON Student TO Faculty_User;
+FROM Student;
+Q.5
+GRANT SELECT, UPDATE ON Student TO Exam_User;
+UPDATE Student SET Marks=95 WHERE Student_ID=101;
+Q.6
+GRANT SELECT ON Student TO Accounts_User;
+CONNECT Accounts_User/accounts123;
+UPDATE Student
+SET Marks=100
+WHERE Student_ID=102;
+Q.7
+REVOKE UPDATE ON Student FROM Exam_User;
+CONNECT Exam_User/exam123;
+SET Marks=99
+WHERE Student_ID=103;
+Q.8
+CREATE VIEW Faculty_Student_View AS
+SELECT Student_ID,
+Student_Name,
+Department,
+SELECT * FROM Faculty_Student_View;
+Q.9
+GRANT SELECT ON Faculty_Student_View TO Faculty_Role;
+CONNECT Faculty_User/faculty123;
+Q.10
+CREATE VIEW Examination_View AS
+Semester,
+GRANT SELECT ON Examination_View TO Exam_User;
+Q.11
+CREATE VIEW Accounts_View AS
+GRANT SELECT ON Accounts_View TO Accounts_User;
+Q.12
+AUDIT UPDATE ON Student;
+SET Marks=92
+WHERE Student_ID=104;
+SELECT USERNAME,
+ACTION_NAME,
+OBJ_NAME
+FROM DBA_AUDIT_TRAIL;
+Q.13
+AUDIT INSERT ON Student;
+VALUES
+(106,'Riya Jain','Computer',5,
+'riya@gmail.com',
+9876543220,
+89,
+'PAID');
+Q.14
+AUDIT DELETE ON Student;
+DELETE FROM Student
+WHERE Student_ID=106;
+Q.15
+ALTER USER Faculty_User
+IDENTIFIED BY faculty456;
+ALTER USER Faculty_User
+ACCOUNT LOCK;
+SELECT Username,
+Account_Status
+WHERE Username='FACULTY_USER';
+Q.16
+ALTER USER Faculty_User
+ACCOUNT UNLOCK;
+CONNECT Faculty_User/faculty456;
